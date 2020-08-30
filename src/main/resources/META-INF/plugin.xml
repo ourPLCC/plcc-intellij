@@ -1,0 +1,24 @@
+<idea-plugin>
+    <id>edu.rit.cs.plcc.jetbrainsPlugin</id>
+    <name>PLCC</name>
+    <vendor email="mdn4993@rit.edu" url="https://github.com/ourPLCC">OurPLCC</vendor>
+
+    <description><![CDATA[
+    Programming language compiler compiler jetbrains plugin for syntax highlighting and autocompletion for grammar files
+    ]]></description>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="PLCC File" implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCFileType"
+                  fieldName="INSTANCE" language="PLCC" extensions="plcc"/>
+        <lang.parserDefinition language="PLCC"
+                               implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCParserDefinition"/>
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>

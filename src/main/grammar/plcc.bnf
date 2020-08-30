@@ -1,0 +1,20 @@
+{
+  parserClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PLCCParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="PLCC"
+  psiImplClassSuffix="Impl"
+  psiPackage="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model"
+  psiImplPackage="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl"
+
+  elementTypeHolderClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PLCCTypes"
+  elementTypeClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PLCCElementType"
+  tokenTypeClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PLCCTokenType"
+
+  psiImplUtilClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl.PLCCPsiImplUtil"
+}
+
+simpleFile ::= item_*
+
+item_ ::= (SECTION_SEPERATOR | COMMENT)
