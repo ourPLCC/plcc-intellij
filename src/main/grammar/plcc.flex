@@ -17,9 +17,13 @@ import com.intellij.psi.TokenType;
 
 EOL = (\r\n|\r|\n)
 WHITESPACE_EXCEPT_NEWLINE = [^\S\r\n]
+IDENTIFIER = [A-Za-z]\w*
 
 COMMENT = #.*
 SECTION_SEPERATOR = %
+
+TOKEN = token
+REGEX = (\'|\")\S(\'|\")
 
 
 // We are using YYINITIAL to be the lexical specification defining state
@@ -29,6 +33,15 @@ SECTION_SEPERATOR = %
 %%
 
 <YYINITIAL> {
+    {TOKEN} {
+          return PLCCTypes.TOKEN;
+      }
+    {REGEX} {
+          return PLCCTypes.REGEX;
+      }
+    {IDENTIFIER} {
+          return PLCCTypes.IDENTIFIER;
+      }
     {SECTION_SEPERATOR} {
           yybegin(GRAMMAR_RULES);
           return PLCCTypes.SECTION_SEPERATOR;
@@ -39,7 +52,8 @@ SECTION_SEPERATOR = %
     {SECTION_SEPERATOR} {
           yybegin(JAVA_INCLUDE);
           return PLCCTypes.SECTION_SEPERATOR;
-      }
+    }
+
 }
 
 ({EOL}|{WHITESPACE_EXCEPT_NEWLINE})+ { return TokenType.WHITE_SPACE; }
