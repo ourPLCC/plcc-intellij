@@ -17,12 +17,18 @@
 
 simpleFile ::= regexDefs (SECTION_SEPERATOR grammarRules)? (SECTION_SEPERATOR javaInclude)?
 
-regexDefs ::= regexDef*
-
+// token type section
+regexDefs ::= regexDef+
 regexDef ::= tokenDef | skipDef
 tokenDef ::= TOKEN? IDENTIFIER REGEX
 skipDef ::= SKIP IDENTIFIER REGEX
+//
 
-grammarRules ::= COMMENT*
+// grammar rules section
+grammarRules ::= grammarRule+
+grammarRule ::= lhs ((SINGLE_MATCH_RULE rhs) | (ANY_MATCH_RULE rhs ANY_MATCH_SEPERATOR?))
+lhs ::= GRAMMAR_NAME | GRAMMAR_NAME_ABSTRACT
+rhs ::= (IDENTIFIER | GRAMMAR_NAME)+
+//
 
 javaInclude ::= COMMENT*

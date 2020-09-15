@@ -15,7 +15,7 @@ import com.intellij.psi.TokenType;
 %eof{  return;
 %eof}
 
-EOL = (\r\n|\r|\n)
+EOL = ([\r\n]|\r|\n)
 WHITESPACE_EXCEPT_NEWLINE = [^\S\r\n]
 IDENTIFIER = [A-Za-z]\w*
 
@@ -26,10 +26,19 @@ TOKEN = token
 SKIP = skip
 REGEX = (\'|\")\S+(\'|\")
 
+GRAMMAR_NAME = <{IDENTIFIER}>
+GRAMMAR_NAME_ABSTRACT = {GRAMMAR_NAME}:{IDENTIFIER}
+
+SINGLE_MATCH_RULE = ::=
+ANY_MATCH_RULE = \*\*=
+
+ANY_MATCH_SEPERATOR = \+{IDENTIFIER}
+
 
 // We are using YYINITIAL to be the lexical specification defining state
 %state GRAMMAR_RULES
 %state JAVA_INCLUDE
+%state EOL_WAIT
 
 %%
 
@@ -57,8 +66,31 @@ REGEX = (\'|\")\S+(\'|\")
           yybegin(JAVA_INCLUDE);
           return PLCCTypes.SECTION_SEPERATOR;
     }
-
+    {IDENTIFIER} {
+          return PLCCTypes.IDENTIFIER;
+      }
+    {GRAMMAR_NAME} {
+          return PLCCTypes.GRAMMAR_NAME;
+      }
+    {GRAMMAR_NAME_ABSTRACT} {
+          return PLCCTypes.GRAMMAR_NAME_ABSTRACT;
+      }
+    {SINGLE_MATCH_RULE} {
+          return PLCCTypes.SINGLE_MATCH_RULE;
+      }
+    {ANY_MATCH_RULE} {
+          return PLCCTypes.ANY_MATCH_RULE;
+      }
+    {ANY_MATCH_SEPERATOR} {
+          return PLCCTypes.ANY_MATCH_SEPERATOR;
+      }
 }
+
+//<EOL_WAIT> {
+//    {EOL} {
+//          return PLCCTypes.EOL;
+//      }
+//}
 
 ({EOL}|{WHITESPACE_EXCEPT_NEWLINE})+ { return TokenType.WHITE_SPACE; }
 
