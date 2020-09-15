@@ -23,7 +23,8 @@ COMMENT = #.*
 SECTION_SEPERATOR = %
 
 TOKEN = token
-REGEX = (\'|\")\S(\'|\")
+SKIP = skip
+REGEX = (\'|\")\S+(\'|\")
 
 
 // We are using YYINITIAL to be the lexical specification defining state
@@ -35,6 +36,9 @@ REGEX = (\'|\")\S(\'|\")
 <YYINITIAL> {
     {TOKEN} {
           return PLCCTypes.TOKEN;
+      }
+    {SKIP} {
+          return PLCCTypes.SKIP;
       }
     {REGEX} {
           return PLCCTypes.REGEX;

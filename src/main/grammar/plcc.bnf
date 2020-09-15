@@ -15,11 +15,13 @@
   psiImplUtilClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl.PLCCPsiImplUtil"
 }
 
-simpleFile ::= (regexDefs SECTION_SEPERATOR grammarRules SECTION_SEPERATOR javaInclude)
+simpleFile ::= regexDefs (SECTION_SEPERATOR grammarRules)? (SECTION_SEPERATOR javaInclude)?
 
 regexDefs ::= regexDef*
 
-regexDef ::= (TOKEN? IDENTIFIER REGEX)
+regexDef ::= tokenDef | skipDef
+tokenDef ::= TOKEN? IDENTIFIER REGEX
+skipDef ::= SKIP IDENTIFIER REGEX
 
 grammarRules ::= COMMENT*
 
