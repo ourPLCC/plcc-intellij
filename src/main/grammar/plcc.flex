@@ -16,7 +16,9 @@ import com.intellij.psi.TokenType;
 %eof}
 
 EOL = ([\r\n]|\r|\n)
+EOLS = {EOL}+
 WHITESPACE_EXCEPT_NEWLINE = [^\S\r\n]
+WHITESPACES_EXCEPT_NEWLINE = {WHITESPACE_EXCEPT_NEWLINE}+
 IDENTIFIER = [A-Za-z]\w*
 
 COMMENT = #.*
@@ -38,7 +40,7 @@ ANY_MATCH_SEPERATOR = \+{IDENTIFIER}
 // We are using YYINITIAL to be the lexical specification defining state
 %state GRAMMAR_RULES
 %state JAVA_INCLUDE
-%state EOL_WAIT
+//%state EOL_WAIT
 
 %%
 
@@ -54,6 +56,12 @@ ANY_MATCH_SEPERATOR = \+{IDENTIFIER}
       }
     {IDENTIFIER} {
           return PLCCTypes.IDENTIFIER;
+      }
+    {WHITESPACES_EXCEPT_NEWLINE} {
+          return PLCCTypes.SPACES;
+      }
+    {EOLS} {
+          return PLCCTypes.EOLS;
       }
     {SECTION_SEPERATOR} {
           yybegin(GRAMMAR_RULES);
@@ -88,11 +96,18 @@ ANY_MATCH_SEPERATOR = \+{IDENTIFIER}
 
 //<EOL_WAIT> {
 //    {EOL} {
+//          yybegin(GRAMMAR_RULES);
 //          return PLCCTypes.EOL;
+//      }
+//    {IDENTIFIER} {
+//
+//      }
+//    {GRAMMAR_NAME} {
+//
 //      }
 //}
 
-({EOL}|{WHITESPACE_EXCEPT_NEWLINE})+ { return TokenType.WHITE_SPACE; }
+//({EOL}|{WHITESPACE_EXCEPT_NEWLINE})+ { return TokenType.WHITE_SPACE; }
 
 {COMMENT} { return PLCCTypes.COMMENT; }
 
