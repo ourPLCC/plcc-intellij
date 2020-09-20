@@ -92,6 +92,12 @@ ANY_MATCH_SEPERATOR = \+{IDENTIFIER}
     {ANY_MATCH_SEPERATOR} {
           return PLCCTypes.ANY_MATCH_SEPERATOR;
       }
+    {WHITESPACES_EXCEPT_NEWLINE} {
+          return PLCCTypes.SPACES;
+      }
+    {EOLS} {
+          return PLCCTypes.EOLS;
+      }
 }
 
 //<EOL_WAIT> {

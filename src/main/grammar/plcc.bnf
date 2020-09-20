@@ -15,6 +15,11 @@
   psiImplUtilClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl.PLCCPsiImplUtil"
 }
 
+// For some reason, the parser model returning one space compared to multiple spaces does not work? this is why
+// I am currently using SPACES and EOLS. Mabye this is fixed now that I removed TokenType.WHITE_SPACE
+
+// Make sure you remember that this does not operate on longest match first, it is whichever rule is first.
+
 simpleFile ::= regexDefs (SECTION_SEPERATOR grammarRules)? (SECTION_SEPERATOR javaInclude)?
 
 // token type section
@@ -25,12 +30,13 @@ skipDef ::= SKIP SPACES+ IDENTIFIER SPACES+ REGEX
 //
 
 // grammar rules section
-grammarRules ::= grammarRule+
-grammarRule ::= singleMatch | multiMatch
-singleMatch ::= lhs SINGLE_MATCH_RULE rhs
-multiMatch ::= lhs ANY_MATCH_RULE rhs ANY_MATCH_SEPERATOR?
+grammarRules ::= EOLS? (grammarRule EOLS)+
+grammarRule ::= SPACES? (singleMatch | multiMatch) SPACES?
+singleMatch ::= lhs SPACES+ SINGLE_MATCH_RULE (rhs)?
+multiMatch ::= lhs SPACES+ ANY_MATCH_RULE (rhs SPACES+ ANY_MATCH_SEPERATOR?)?
 lhs ::= GRAMMAR_NAME | GRAMMAR_NAME_ABSTRACT
-rhs ::= (IDENTIFIER | GRAMMAR_NAME)*
+rhs ::= (SPACES+ (IDENTIFIER | namedRule | GRAMMAR_NAME))+
+namedRule ::= GRAMMAR_NAME IDENTIFIER
 //
 
-javaInclude ::= COMMENT*
+javaInclude ::= COMMENT+
