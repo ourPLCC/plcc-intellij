@@ -36,6 +36,8 @@ ANY_MATCH_RULE = \*\*=
 
 ANY_MATCH_SEPERATOR = \+{IDENTIFIER}
 
+INCLUDE = include
+
 
 // We are using YYINITIAL to be the lexical specification defining state
 %state GRAMMAR_RULES
@@ -100,20 +102,20 @@ ANY_MATCH_SEPERATOR = \+{IDENTIFIER}
       }
 }
 
-//<EOL_WAIT> {
-//    {EOL} {
-//          yybegin(GRAMMAR_RULES);
-//          return PLCCTypes.EOL;
-//      }
-//    {IDENTIFIER} {
-//
-//      }
-//    {GRAMMAR_NAME} {
-//
-//      }
-//}
-
-//({EOL}|{WHITESPACE_EXCEPT_NEWLINE})+ { return TokenType.WHITE_SPACE; }
+<JAVA_INCLUDE> {
+    {INCLUDE} {
+          return PLCCTypes.INCLUDE;
+      }
+    {IDENTIFIER} {
+          return PLCCTypes.IDENTIFIER;
+      }
+    {WHITESPACES_EXCEPT_NEWLINE} {
+          return PLCCTypes.SPACES;
+      }
+    {EOLS} {
+          return PLCCTypes.EOLS;
+      }
+}
 
 {COMMENT} { return PLCCTypes.COMMENT; }
 

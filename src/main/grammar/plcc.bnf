@@ -24,7 +24,7 @@ simpleFile ::= regexDefs (SECTION_SEPERATOR grammarRules)? (SECTION_SEPERATOR ja
 
 // token type section
 regexDefs ::= EOLS? (regexDef EOLS)+
-regexDef ::= SPACES? (tokenDef | skipDef) SPACES?
+regexDef ::= SPACES? (tokenDef | skipDef) SPACES? COMMENT?
 tokenDef ::= (TOKEN? SPACES+)? IDENTIFIER SPACES+ REGEX
 skipDef ::= SKIP SPACES+ IDENTIFIER SPACES+ REGEX
 //
@@ -39,4 +39,5 @@ rhs ::= (SPACES+ (IDENTIFIER | namedRule | GRAMMAR_NAME))+
 namedRule ::= GRAMMAR_NAME IDENTIFIER
 //
 
-javaInclude ::= COMMENT+
+javaInclude ::= (EOLS includeStatement)* EOLS?
+includeStatement ::= SPACES? INCLUDE SPACES+ IDENTIFIER SPACES?
