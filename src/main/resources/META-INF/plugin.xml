@@ -16,6 +16,8 @@
                   fieldName="INSTANCE" language="PLCC" extensions="plcc"/>
         <lang.parserDefinition language="PLCC"
                                implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="PLCC"
+                                       implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCSyntaxHighlighterFactory"/>
     </extensions>
 
     <actions>
