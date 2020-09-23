@@ -31,21 +31,29 @@ REGEX = (\'|\")\S+(\'|\")
 LEFT_ANGLE_BRACKET = <
 RIGHT_ANGLE_BRACKET = >
 
-GRAMMAR_NAME = {LEFT_ANGLE_BRACKET}{IDENTIFIER}{RIGHT_ANGLE_BRACKET}
-GRAMMAR_NAME_ABSTRACT = {GRAMMAR_NAME}:{IDENTIFIER}
+//FULL_GRAMMAR_NAME = {LEFT_ANGLE_BRACKET}{IDENTIFIER}{RIGHT_ANGLE_BRACKET}
+//GRAMMAR_NAME_ABSTRACT = {FULL_GRAMMAR_NAME}{COLON}{INSTANTIATED_NAME}
+INSTANTIATED_NAME = [A-Z][a-zA-Z0-9]*
 
 SINGLE_MATCH_RULE = ::=
 ANY_MATCH_RULE = \*\*=
 
-ANY_MATCH_SEPERATOR = \+{IDENTIFIER}
+PLUS = \+
 
 INCLUDE = include
 
+TOKEN_TYPE_NAME = [A-Z][A-Z0-9]*
+
+FILE_NAME = {IDENTIFIER}
+
+COLON = :
+
+LOWER_CAMEL_CASE_NAME = [a-z][a-zA-Z0-9]*
 
 // We are using YYINITIAL to be the lexical specification defining state
-%state GRAMMAR_RULES
+%state GRAMMAR_RULE_LHS
 %state JAVA_INCLUDE
-//%state EOL_WAIT
+%state GRAMMAR_RULE_RHS
 
 %%
 
@@ -59,8 +67,8 @@ INCLUDE = include
     {REGEX} {
           return PLCCTypes.REGEX;
       }
-    {IDENTIFIER} {
-          return PLCCTypes.IDENTIFIER;
+    {TOKEN_TYPE_NAME} {
+          return PLCCTypes.TOKEN_TYPE_NAME;
       }
     {WHITESPACES_EXCEPT_NEWLINE} {
           return PLCCTypes.SPACES;
@@ -69,33 +77,38 @@ INCLUDE = include
           return PLCCTypes.EOLS;
       }
     {SECTION_SEPERATOR} {
-          yybegin(GRAMMAR_RULES);
+          yybegin(GRAMMAR_RULE_LHS);
           return PLCCTypes.SECTION_SEPERATOR;
       }
 }
 
-<GRAMMAR_RULES> {
+<GRAMMAR_RULE_LHS> {
     {SECTION_SEPERATOR} {
           yybegin(JAVA_INCLUDE);
           return PLCCTypes.SECTION_SEPERATOR;
     }
-    {IDENTIFIER} {
-          return PLCCTypes.IDENTIFIER;
+    {COLON} {
+          return PLCCTypes.COLON;
       }
-    {GRAMMAR_NAME} {
-          return PLCCTypes.GRAMMAR_NAME;
+    {INSTANTIATED_NAME} {
+          return PLCCTypes.INSTANTIATED_NAME;
       }
-    {GRAMMAR_NAME_ABSTRACT} {
-          return PLCCTypes.GRAMMAR_NAME_ABSTRACT;
+    {LEFT_ANGLE_BRACKET} {
+          return PLCCTypes.LEFT_ANGLE_BRACKET;
+      }
+    {RIGHT_ANGLE_BRACKET} {
+          return PLCCTypes.RIGHT_ANGLE_BRACKET;
       }
     {SINGLE_MATCH_RULE} {
+          yybegin(GRAMMAR_RULE_RHS);
           return PLCCTypes.SINGLE_MATCH_RULE;
       }
     {ANY_MATCH_RULE} {
+          yybegin(GRAMMAR_RULE_RHS);
           return PLCCTypes.ANY_MATCH_RULE;
       }
-    {ANY_MATCH_SEPERATOR} {
-          return PLCCTypes.ANY_MATCH_SEPERATOR;
+    {LOWER_CAMEL_CASE_NAME} {
+          return PLCCTypes.GRAMMAR_DEF_NAME;
       }
     {WHITESPACES_EXCEPT_NEWLINE} {
           return PLCCTypes.SPACES;
@@ -104,13 +117,39 @@ INCLUDE = include
           return PLCCTypes.EOLS;
       }
 }
+
+<GRAMMAR_RULE_RHS> {
+    {PLUS} {
+          return PLCCTypes.PLUS;
+      }
+    {LEFT_ANGLE_BRACKET} {
+          return PLCCTypes.LEFT_ANGLE_BRACKET;
+      }
+    {RIGHT_ANGLE_BRACKET} {
+          return PLCCTypes.RIGHT_ANGLE_BRACKET;
+      }
+    {LOWER_CAMEL_CASE_NAME} {
+          return PLCCTypes.GRAMMAR_USAGE_NAME;
+      }
+    {TOKEN_TYPE_NAME} {
+          return PLCCTypes.TOKEN_TYPE_NAME;
+      }
+    {WHITESPACES_EXCEPT_NEWLINE} {
+          return PLCCTypes.SPACES;
+      }
+    {EOLS} {
+          yybegin(GRAMMAR_RULE_LHS);
+          return PLCCTypes.EOLS;
+      }
+}
+
 
 <JAVA_INCLUDE> {
     {INCLUDE} {
           return PLCCTypes.INCLUDE;
       }
-    {IDENTIFIER} {
-          return PLCCTypes.IDENTIFIER;
+    {FILE_NAME} {
+          return PLCCTypes.FILE_NAME;
       }
     {WHITESPACES_EXCEPT_NEWLINE} {
           return PLCCTypes.SPACES;

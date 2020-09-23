@@ -25,19 +25,27 @@ simpleFile ::= regexDefs (SECTION_SEPERATOR grammarRules)? (SECTION_SEPERATOR ja
 // token type section
 regexDefs ::= EOLS? (regexDef EOLS)+
 regexDef ::= SPACES? (tokenDef | skipDef) SPACES? COMMENT?
-tokenDef ::= (TOKEN? SPACES+)? IDENTIFIER SPACES+ REGEX
-skipDef ::= SKIP SPACES+ IDENTIFIER SPACES+ REGEX
+tokenDef ::= (TOKEN? SPACES+)? TOKEN_TYPE_NAME SPACES+ REGEX
+skipDef ::= SKIP SPACES+ TOKEN_TYPE_NAME SPACES+ REGEX
 //
 
 // grammar rules section
-grammarRules ::= EOLS? (grammarRule EOLS)+
+grammarRules ::= EOLS+ (grammarRule EOLS)+
 grammarRule ::= SPACES? (singleMatch | multiMatch) SPACES?
 singleMatch ::= lhs SPACES+ SINGLE_MATCH_RULE (rhs)?
-multiMatch ::= lhs SPACES+ ANY_MATCH_RULE (rhs SPACES+ ANY_MATCH_SEPERATOR?)?
-lhs ::= GRAMMAR_NAME | GRAMMAR_NAME_ABSTRACT
-rhs ::= (SPACES+ (IDENTIFIER | namedRule | GRAMMAR_NAME))+
-namedRule ::= GRAMMAR_NAME IDENTIFIER
+multiMatch ::= lhs SPACES+ ANY_MATCH_RULE (rhs SPACES+ anyMatchSeperator?)?
+lhs ::= abstractGrammarDef | concreteGrammarDef
+rhs ::= (SPACES+ (namedGrammarUsage | unnamedGrammarUsage | capturedTokenType | uncapturedTokenType))+
+anyMatchSeperator ::= PLUS TOKEN_TYPE_NAME
+
+concreteGrammarDef ::= LEFT_ANGLE_BRACKET GRAMMAR_DEF_NAME RIGHT_ANGLE_BRACKET
+abstractGrammarDef ::= concreteGrammarDef COLON INSTANTIATED_NAME
+
+unnamedGrammarUsage ::= LEFT_ANGLE_BRACKET GRAMMAR_USAGE_NAME RIGHT_ANGLE_BRACKET
+namedGrammarUsage ::= unnamedGrammarUsage GRAMMAR_USAGE_NAME
+capturedTokenType ::= LEFT_ANGLE_BRACKET TOKEN_TYPE_NAME RIGHT_ANGLE_BRACKET
+uncapturedTokenType ::= TOKEN_TYPE_NAME
 //
 
 javaInclude ::= (EOLS includeStatement)* EOLS?
-includeStatement ::= SPACES? INCLUDE SPACES+ IDENTIFIER SPACES?
+includeStatement ::= SPACES? INCLUDE SPACES+ FILE_NAME SPACES?
