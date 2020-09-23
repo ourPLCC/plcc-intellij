@@ -18,6 +18,8 @@
                                implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCParserDefinition"/>
         <lang.syntaxHighlighterFactory language="PLCC"
                                        implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCSyntaxHighlighterFactory"/>
+        <lang.commenter language="PLCC"
+                        implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCCommenter"/>
     </extensions>
 
     <actions>
