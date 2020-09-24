@@ -12,14 +12,24 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+
+        <!-- File type and syntax structure -->
         <fileType name="PLCC File" implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCFileType"
                   fieldName="INSTANCE" language="PLCC" extensions="plcc"/>
         <lang.parserDefinition language="PLCC"
                                implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCParserDefinition"/>
         <lang.syntaxHighlighterFactory language="PLCC"
                                        implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCSyntaxHighlighterFactory"/>
+
+        <!-- Comment with Ctrl+/ -->
         <lang.commenter language="PLCC"
                         implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCCommenter"/>
+
+        <!-- Create new PLCC module or project -->
+        <moduleType id="PLCC_MODULE_TYPE"
+                    implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.module.PLCCModuleType"/>
+        <moduleBuilder builderClass="edu.rit.cs.plcc.jetbrainsPlugin.module.PLCCModuleBuilder"/>
+        <sdkType implementation="edu.rit.cs.plcc.jetbrainsPlugin.sdk.PLCCSdk"/>
     </extensions>
 
     <actions>
