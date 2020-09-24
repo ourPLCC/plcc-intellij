@@ -29,7 +29,7 @@
         <moduleType id="PLCC_MODULE_TYPE"
                     implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.module.PLCCModuleType"/>
         <moduleBuilder builderClass="edu.rit.cs.plcc.jetbrainsPlugin.module.PLCCModuleBuilder"/>
-        <sdkType implementation="edu.rit.cs.plcc.jetbrainsPlugin.sdk.PLCCSdk"/>
+        <sdkType implementation="edu.rit.cs.plcc.jetbrainsPlugin.sdk.PLCCSdkType"/>
     </extensions>
 
     <actions>

@@ -16,9 +16,9 @@ import java.nio.file.Paths;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-public class PLCCSdk extends SdkType {
+public class PLCCSdkType extends SdkType {
 
-    public PLCCSdk() {
+    public PLCCSdkType() {
         super("plcc");
     }
 
