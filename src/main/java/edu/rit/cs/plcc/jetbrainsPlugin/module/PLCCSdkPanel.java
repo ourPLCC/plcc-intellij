@@ -3,7 +3,8 @@ package edu.rit.cs.plcc.jetbrainsPlugin.module;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.projectRoots.ProjectJdkTable;
+import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -18,17 +19,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 public class PLCCSdkPanel extends JPanel {
     private JPanel rootPanel;
     private JComboBox comboBox1;
 
-    public static final String NO_PLCC = "No PLCC detected. Click for options";
+    private Optional<Sdk> currentlySelectedSdk = Optional.empty();
 
     public static final String DOWNLOAD_PLCC = "Download and Install PLCC";
     public static final String ADD_PLCC = "Add PLCC from filesystem";
@@ -57,11 +57,27 @@ public class PLCCSdkPanel extends JPanel {
                     switch ((String) Objects.requireNonNull(comboBox1.getSelectedItem())) {
                         case ADD_PLCC:
                             Optional<VirtualFile> plccDir = findPlccInstalation();
+                            if (plccDir.isPresent()) {
+                                plccDir.get();
+                            }
                             break;
 
                         case DOWNLOAD_PLCC:
-                            Optional<VirtualFile> plccDir2 = downloadAndInstallPlcc();
-
+                            Optional<VirtualFile> plccDir2Opt = downloadAndInstallPlcc();
+                            plccDir2Opt.ifPresentOrElse(plccDir2 -> {
+                                Optional<String> version = readVersion(plccDir2);
+                                version.ifPresentOrElse(string -> {
+                                    String versionWithType = "plcc".concat("-").concat(string);
+                                    String plccDir2Path = plccDir2.getPath();
+                                    PropertiesComponent.getInstance().setValue(versionWithType, plccDir2Path);
+                                    comboBox1.insertItemAt(versionWithType.concat(" (").concat(plccDir2Path).concat(")"), 0);
+                                    comboBox1.setSelectedIndex(0);
+                                }, () -> {
+                                    // already threw stack trace
+                                });
+                            }, () -> {
+                                // already threw stack trace
+                            });
                             break;
                     }
                 }
@@ -108,7 +124,8 @@ public class PLCCSdkPanel extends JPanel {
     // stole most of this implementation from
     // https://github.com/bulenkov/RedlineSmalltalk/blob/master/src/st/redline/smalltalk/module/RsSdkPanel.java
     private Optional<VirtualFile> downloadAndInstallPlcc() {
-        String downloadedFileName = "PLCCv2.0.1.zip";
+        String plccFolderName = "plcc-2.0.1";
+        String downloadedFileName = plccFolderName.concat(".zip");
         DownloadableFileService fileService = DownloadableFileService.getInstance();
         DownloadableFileDescription fileDescription = fileService.createFileDescription(
                 "https://github.com/ourPLCC/plcc/archive/v2.0.1.zip", downloadedFileName);
@@ -121,11 +138,30 @@ public class PLCCSdkPanel extends JPanel {
             try {
                 VirtualFile file = files.get(0).first;
                 ZipUtil.extract(VfsUtil.virtualToIoFile(file), new File(directory), null);
-                return Optional.ofNullable(LocalFileSystem.getInstance().findFileByIoFile(Paths.get(directory, downloadedFileName, "src").toFile()));
+
+
+                return Optional.ofNullable(
+                        LocalFileSystem.getInstance().findFileByIoFile(Paths.get(directory, plccFolderName, "src").toFile()));
             } catch (IOException ioe) {
                 ioe.printStackTrace();
                 return Optional.empty();
             }
+        } else {
+            new IOException("File did not download correctly. There should be one file downloaded").printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Sdk> getSdk() {
+        return currentlySelectedSdk;
+    }
+
+    private Optional<String> readVersion(VirtualFile file) {
+        try {
+            return Optional.of(Files.readString(Paths.get(file.getPath(), "VERSION")));
+        } catch (IOException e) {
+            System.err.println("File: " + file.getPath() + " does not contain a VERSION file!");
+            e.printStackTrace();
         }
         return Optional.empty();
     }

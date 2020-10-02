@@ -28,7 +28,7 @@ public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderLis
 
     @Override
     public void moduleCreated(@NotNull Module module) {
-        // this does not hit for some reason
+        // this does not hit for some reason because it is being blocked?
         System.out.println("HELLO, " + module.getName());
     }
 
