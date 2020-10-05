@@ -3,7 +3,6 @@ package edu.rit.cs.plcc.jetbrainsPlugin.module;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.LocalFileSystem;
@@ -40,50 +39,65 @@ public class PLCCSdkPanel extends JPanel {
     }
 
     private void findSDKs() {
-        Optional<String> plccEnvVar = Optional.ofNullable(System.getenv("LIBPLCC"));
+        comboBox1.addItem(DOWNLOAD_PLCC);
+        comboBox1.addItem(ADD_PLCC);
+        comboBox1.setSelectedIndex(-1);
 
-        VirtualFile plccLocation = null;
-        if (plccEnvVar.isPresent()) {
-            plccLocation = LocalFileSystem.getInstance().findFileByIoFile(new File(plccEnvVar.get()));
-        }
+        comboBox1.addActionListener(e -> {
+            if (e.getActionCommand().equals("comboBoxChanged")) {
+                switch ((String) Objects.requireNonNull(comboBox1.getSelectedItem())) {
+                    case ADD_PLCC:
+                        Optional<VirtualFile> plccDir = findPlccInstalation();
+                        if (plccDir.isPresent()) {
+                            plccDir.get();
+                        }
+                        break;
 
-        if (plccLocation == null || plccLocation.findChild("plcc.py") == null) {
-            comboBox1.addItem(DOWNLOAD_PLCC);
-            comboBox1.addItem(ADD_PLCC);
-            comboBox1.setSelectedIndex(-1);
-
-            comboBox1.addActionListener(e -> {
-                if (e.getActionCommand().equals("comboBoxChanged")) {
-                    switch ((String) Objects.requireNonNull(comboBox1.getSelectedItem())) {
-                        case ADD_PLCC:
-                            Optional<VirtualFile> plccDir = findPlccInstalation();
-                            if (plccDir.isPresent()) {
-                                plccDir.get();
-                            }
-                            break;
-
-                        case DOWNLOAD_PLCC:
-                            Optional<VirtualFile> plccDir2Opt = downloadAndInstallPlcc();
-                            plccDir2Opt.ifPresentOrElse(plccDir2 -> {
-                                Optional<String> version = readVersion(plccDir2);
-                                version.ifPresentOrElse(string -> {
-                                    String versionWithType = "plcc".concat("-").concat(string);
-                                    String plccDir2Path = plccDir2.getPath();
-                                    PropertiesComponent.getInstance().setValue(versionWithType, plccDir2Path);
-                                    comboBox1.insertItemAt(versionWithType.concat(" (").concat(plccDir2Path).concat(")"), 0);
-                                    comboBox1.setSelectedIndex(0);
-                                }, () -> {
-                                    // already threw stack trace
-                                });
+                    case DOWNLOAD_PLCC:
+                        Optional<VirtualFile> plccDir2Opt = downloadAndInstallPlcc();
+                        plccDir2Opt.ifPresentOrElse(plccDir2 -> {
+                            Optional<String> version = readVersion(plccDir2);
+                            version.ifPresentOrElse(string -> {
+                                formatAndAddSDKEntry(string, plccDir2.getPath());
                             }, () -> {
                                 // already threw stack trace
                             });
-                            break;
+                        }, () -> {
+                            // already threw stack trace
+                        });
+                        break;
+                }
+            }
+        });
+
+        String homeDir = Paths.get(System.getProperty("user.home"), ".plcc").toString();
+        Optional<VirtualFile> dotPlccDir = Optional.ofNullable(LocalFileSystem.getInstance().findFileByIoFile(new File(homeDir)));
+        dotPlccDir.ifPresent(dotPlccDirPresent -> {
+            VirtualFile[] children = dotPlccDirPresent.getChildren();
+            Arrays.stream(children).forEach(child -> {
+                Optional<VirtualFile> possibSrcDir = Optional.ofNullable(child.findChild("src"));
+                if (possibSrcDir.isPresent()) {
+                    if (possibSrcDir.get().findChild("plcc.py") != null) {
+                        Optional<String> version = readVersion(possibSrcDir.get());
+                        version.ifPresent(s -> formatAndAddSDKEntry(s, possibSrcDir.get().getPath()));
                     }
                 }
             });
-        } else {
+        });
 
+        Optional<String> libPlccPath = Optional.ofNullable(System.getenv("LIBPLCC"));
+        VirtualFile libPlccDir = null;
+        if (libPlccPath.isPresent()) {
+            libPlccDir = LocalFileSystem.getInstance().findFileByIoFile(new File(libPlccPath.get()));
+        }
+
+        if (libPlccDir != null && libPlccDir.findChild("plcc.py") != null) {
+            Optional<String> version = readVersion(libPlccDir);
+            version.ifPresentOrElse(versionPresent -> {
+                formatAndAddSDKEntry(versionPresent, libPlccPath.get());
+            }, () -> {
+                new IOException("No version file found in LIBPLCC directory with a plcc.py file").printStackTrace();
+            });
         }
     }
 
@@ -150,6 +164,14 @@ public class PLCCSdkPanel extends JPanel {
             new IOException("File did not download correctly. There should be one file downloaded").printStackTrace();
             return Optional.empty();
         }
+    }
+
+    private void formatAndAddSDKEntry(String version, String path) {
+        String versionWithType = "plcc".concat("-").concat(version);
+        PropertiesComponent.getInstance().setValue(versionWithType, path);
+        PropertiesComponent.getInstance().setValue(versionWithType, path);
+        comboBox1.insertItemAt(versionWithType.concat(" (").concat(path).concat(")"), 0);
+        comboBox1.setSelectedIndex(0);
     }
 
     public Optional<Sdk> getSdk() {

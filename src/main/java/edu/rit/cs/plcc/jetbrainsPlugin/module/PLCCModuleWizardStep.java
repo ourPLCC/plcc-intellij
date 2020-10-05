@@ -29,7 +29,7 @@ public class PLCCModuleWizardStep extends ModuleWizardStep {
     @Override
     public boolean validate() throws ConfigurationException {
         if (sdkPanel.getSdk().isEmpty()) {
-            throw new ConfigurationException("Specify redline smalltalk SDK");
+            throw new ConfigurationException("Specify PLCC tool location");
         }
         return super.validate();
     }
