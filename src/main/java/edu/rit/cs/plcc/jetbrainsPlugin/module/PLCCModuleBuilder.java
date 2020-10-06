@@ -7,10 +7,14 @@ import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
 
 public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderListener {
 
@@ -23,7 +27,17 @@ public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderLis
 
     @Override
     public void setupRootModel(@NotNull ModifiableRootModel modifiableRootModel) throws ConfigurationException {
-
+        Project project = modifiableRootModel.getProject();
+        var contentEntry = doAddContentEntry(modifiableRootModel);
+        assert contentEntry != null;
+        VirtualFile root = contentEntry.getFile();
+        assert root != null;
+        try {
+            VirtualFile vf = root.createChildDirectory(this, "src");
+            contentEntry.addSourceFolder(vf, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

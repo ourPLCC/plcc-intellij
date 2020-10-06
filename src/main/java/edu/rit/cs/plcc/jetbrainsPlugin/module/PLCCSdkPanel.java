@@ -3,7 +3,6 @@ package edu.rit.cs.plcc.jetbrainsPlugin.module;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -26,8 +25,6 @@ import java.util.List;
 public class PLCCSdkPanel extends JPanel {
     private JPanel rootPanel;
     private JComboBox comboBox1;
-
-    private Optional<Sdk> currentlySelectedSdk = Optional.empty();
 
     public static final String DOWNLOAD_PLCC = "Download and Install PLCC";
     public static final String ADD_PLCC = "Add PLCC from filesystem";
@@ -66,6 +63,9 @@ public class PLCCSdkPanel extends JPanel {
                             // already threw stack trace
                         });
                         break;
+
+                    default:
+                        PropertiesComponent.getInstance().setValue("SelectedPLCCToolchain", (String)comboBox1.getSelectedItem());
                 }
             }
         });
@@ -167,15 +167,19 @@ public class PLCCSdkPanel extends JPanel {
     }
 
     private void formatAndAddSDKEntry(String version, String path) {
-        String versionWithType = "plcc".concat("-").concat(version);
-        PropertiesComponent.getInstance().setValue(versionWithType, path);
-        PropertiesComponent.getInstance().setValue(versionWithType, path);
-        comboBox1.insertItemAt(versionWithType.concat(" (").concat(path).concat(")"), 0);
+        String versionWithPath = "plcc".concat("-").concat(version).concat(" (").concat(path).concat(")");
+        PropertiesComponent.getInstance().setValue(versionWithPath, path);
+        PropertiesComponent.getInstance().setValue("SelectedPLCCToolchain", versionWithPath);
+        comboBox1.insertItemAt(versionWithPath, 0);
         comboBox1.setSelectedIndex(0);
     }
 
-    public Optional<Sdk> getSdk() {
-        return currentlySelectedSdk;
+    public Optional<String> getSdk() {
+        if (comboBox1.getSelectedIndex() == -1) {
+            return Optional.empty();
+        } else {
+            return Optional.of((String) Objects.requireNonNull(comboBox1.getSelectedItem()));
+        }
     }
 
     private Optional<String> readVersion(VirtualFile file) {
