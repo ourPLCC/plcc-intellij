@@ -35,7 +35,7 @@ grammarRule ::= SPACES? (singleMatch | multiMatch) SPACES?
 singleMatch ::= lhs SPACES+ SINGLE_MATCH_RULE (rhs)?
 multiMatch ::= lhs SPACES+ ANY_MATCH_RULE (rhs SPACES+ anyMatchSeperator?)?
 lhs ::= abstractGrammarDef | concreteGrammarDef
-rhs ::= (SPACES+ (namedGrammarUsage | unnamedGrammarUsage | capturedTokenType | uncapturedTokenType))+
+rhs ::= (SPACES+ (namedGrammarUsage | unnamedGrammarUsage | namedCapturedTokenType | unnamedCapturedTokenType| uncapturedTokenType))+
 anyMatchSeperator ::= PLUS TOKEN_TYPE_NAME
 
 concreteGrammarDef ::= LEFT_ANGLE_BRACKET GRAMMAR_DEF_NAME RIGHT_ANGLE_BRACKET
@@ -43,7 +43,8 @@ abstractGrammarDef ::= concreteGrammarDef COLON INSTANTIATED_NAME
 
 unnamedGrammarUsage ::= LEFT_ANGLE_BRACKET GRAMMAR_USAGE_NAME RIGHT_ANGLE_BRACKET
 namedGrammarUsage ::= unnamedGrammarUsage GRAMMAR_USAGE_NAME
-capturedTokenType ::= LEFT_ANGLE_BRACKET TOKEN_TYPE_NAME RIGHT_ANGLE_BRACKET
+unnamedCapturedTokenType ::= LEFT_ANGLE_BRACKET TOKEN_TYPE_NAME RIGHT_ANGLE_BRACKET
+namedCapturedTokenType ::= unnamedCapturedTokenType GRAMMAR_USAGE_NAME
 uncapturedTokenType ::= TOKEN_TYPE_NAME
 //
 
