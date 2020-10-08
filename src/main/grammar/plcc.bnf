@@ -20,17 +20,19 @@
 
 // Make sure you remember that this does not operate on longest match first, it is whichever rule is first.
 
-simpleFile ::= regexDefs (SECTION_SEPERATOR grammarRules)? (SECTION_SEPERATOR javaInclude)?
+simpleFile ::= regexDefs (SECTION_SEPERATOR EOLS grammarRules)? (SECTION_SEPERATOR EOLS javaInclude)?
+
+fillerLines ::= (COMMENT | EOLS)*
 
 // token type section
-regexDefs ::= EOLS? (regexDef EOLS)+
+regexDefs ::= fillerLines (regexDef EOLS)+
 regexDef ::= SPACES? (tokenDef | skipDef) SPACES? COMMENT?
 tokenDef ::= (TOKEN? SPACES+)? TOKEN_TYPE_NAME SPACES+ REGEX
 skipDef ::= SKIP SPACES+ TOKEN_TYPE_NAME SPACES+ REGEX
 //
 
 // grammar rules section
-grammarRules ::= EOLS+ (grammarRule EOLS)+
+grammarRules ::= fillerLines (grammarRule EOLS)+
 grammarRule ::= SPACES? (singleMatch | multiMatch) SPACES?
 singleMatch ::= lhs SPACES+ SINGLE_MATCH_RULE (rhs)?
 multiMatch ::= lhs SPACES+ ANY_MATCH_RULE (rhs SPACES+ anyMatchSeperator?)?
@@ -48,5 +50,5 @@ namedCapturedTokenType ::= unnamedCapturedTokenType GRAMMAR_USAGE_NAME
 uncapturedTokenType ::= TOKEN_TYPE_NAME
 //
 
-javaInclude ::= (EOLS includeStatement)* EOLS?
+javaInclude ::= fillerLines (includeStatement EOLS)*
 includeStatement ::= SPACES? INCLUDE SPACES+ FILE_NAME SPACES?
