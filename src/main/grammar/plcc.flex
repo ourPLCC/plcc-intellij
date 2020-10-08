@@ -26,7 +26,7 @@ SECTION_SEPERATOR = %
 
 TOKEN = token
 SKIP = skip
-REGEX = (\'|\")\S+(\'|\")
+REGEX = (\'|\").+(\'|\")
 
 LEFT_ANGLE_BRACKET = <
 RIGHT_ANGLE_BRACKET = >
