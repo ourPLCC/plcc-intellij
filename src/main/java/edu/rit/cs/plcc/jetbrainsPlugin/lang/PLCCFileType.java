@@ -1,6 +1,7 @@
 package edu.rit.cs.plcc.jetbrainsPlugin.lang;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
+import edu.rit.cs.plcc.jetbrainsPlugin.util.PLCCIcon;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

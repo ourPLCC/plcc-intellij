@@ -1,4 +1,4 @@
-package edu.rit.cs.plcc.jetbrainsPlugin.lang;
+package edu.rit.cs.plcc.jetbrainsPlugin.util;
 
 import com.intellij.openapi.util.IconLoader;
 

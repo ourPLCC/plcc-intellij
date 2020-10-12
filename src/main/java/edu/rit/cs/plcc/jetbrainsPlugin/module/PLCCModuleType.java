@@ -2,7 +2,7 @@ package edu.rit.cs.plcc.jetbrainsPlugin.module;
 
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
-import edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCIcon;
+import edu.rit.cs.plcc.jetbrainsPlugin.util.PLCCIcon;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
