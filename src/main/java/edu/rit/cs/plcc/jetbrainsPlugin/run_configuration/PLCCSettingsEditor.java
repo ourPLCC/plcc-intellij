@@ -20,6 +20,6 @@ public class PLCCSettingsEditor extends SettingsEditor<PLCCRunConfiguration> {
 
     @Override
     protected @NotNull JComponent createEditor() {
-        return new PLCCConfigurationForm();
+        return new PLCCConfigurationGui();
     }
 }

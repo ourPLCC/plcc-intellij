@@ -20,6 +20,7 @@
                                implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCParserDefinition"/>
         <lang.syntaxHighlighterFactory language="PLCC"
                                        implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCSyntaxHighlighterFactory"/>
+        <internalFileTemplate name="PLCC File"/>
 
         <!-- Comment with Ctrl+/ -->
         <lang.commenter language="PLCC"
@@ -33,6 +34,9 @@
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <action
+            id="PLCC.NewPlccFile"
+            class="edu.rit.cs.plcc.jetbrainsPlugin.lang.NewPlccFile">
+        </action>
     </actions>
 </idea-plugin>
