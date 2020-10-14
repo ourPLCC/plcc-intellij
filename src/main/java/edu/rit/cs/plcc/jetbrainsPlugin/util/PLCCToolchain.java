@@ -3,6 +3,7 @@ package edu.rit.cs.plcc.jetbrainsPlugin.util;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -39,6 +40,7 @@ public class PLCCToolchain {
     }
 
     public void populateToolchainComboBox() {
+        System.out.println(Arrays.toString(ProjectJdkTable.getInstance().getAllJdks()));
         comboBox.addItem(DOWNLOAD_PLCC);
         comboBox.addItem(ADD_PLCC);
         comboBox.setSelectedIndex(-1);
@@ -50,6 +52,8 @@ public class PLCCToolchain {
                         Optional<VirtualFile> plccDir = findPlccInstalation();
                         if (plccDir.isPresent()) {
                             plccDir.get();
+                        } else {
+                            comboBox.setSelectedIndex(-1);
                         }
                         break;
 
