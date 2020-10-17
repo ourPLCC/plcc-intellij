@@ -34,13 +34,14 @@ public class PLCCToolchain {
     private static final String DOWNLOAD_PLCC = "Download and Install PLCC";
     private static final String ADD_PLCC = "Add PLCC from filesystem";
 
+    public static final String PLCC_LOCATION_PROPERTY_KEY = "SelectedPLCCToolchain";
+
     public PLCCToolchain(JComboBox comboBox, Component parent) {
         this.comboBox = comboBox;
         this.parent = parent;
     }
 
     public void populateToolchainComboBox() {
-        System.out.println(Arrays.toString(ProjectJdkTable.getInstance().getAllJdks()));
         comboBox.addItem(DOWNLOAD_PLCC);
         comboBox.addItem(ADD_PLCC);
         comboBox.setSelectedIndex(-1);
@@ -72,7 +73,7 @@ public class PLCCToolchain {
                         break;
 
                     default:
-                        PropertiesComponent.getInstance().setValue("SelectedPLCCToolchain", (String)comboBox.getSelectedItem());
+                        PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, (String)comboBox.getSelectedItem());
                 }
             }
         });
@@ -145,7 +146,7 @@ public class PLCCToolchain {
     private void formatAndAddSDKEntry(String version, String path) {
         String versionWithPath = "plcc".concat("-").concat(version).concat(" (").concat(path).concat(")");
         PropertiesComponent.getInstance().setValue(versionWithPath, path);
-        PropertiesComponent.getInstance().setValue("SelectedPLCCToolchain", versionWithPath);
+        PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, versionWithPath);
         comboBox.insertItemAt(versionWithPath, 0);
         comboBox.setSelectedIndex(0);
     }

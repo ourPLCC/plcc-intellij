@@ -20,7 +20,7 @@ public class PLCCRunConfiguration extends RunConfigurationBase<RunConfigurationE
 
     @Override
     public @NotNull SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
-        return new PLCCSettingsEditor();
+        return new PLCCSettingsEditor(getProject());
     }
 
     @Override

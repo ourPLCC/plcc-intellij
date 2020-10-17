@@ -18,7 +18,7 @@ public class PLCCConfigurationFactory extends ConfigurationFactory {
     }
 
     @Override
-    public String getId() {
+    public @NotNull String getId() {
         return "Plcc";
     }
 }

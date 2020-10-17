@@ -18,8 +18,6 @@ import java.io.IOException;
 
 public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderListener {
 
-    private Sdk plccSdk;
-
     @Override
     public ModuleType<?> getModuleType() {
         return PLCCModuleType.getInstance();
@@ -44,10 +42,6 @@ public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderLis
     public void moduleCreated(@NotNull Module module) {
         // this does not hit for some reason because it is being blocked?
         System.out.println("HELLO, " + module.getName());
-    }
-
-    public void setSdk(Sdk sdk) {
-        plccSdk = sdk;
     }
 
     @Override
