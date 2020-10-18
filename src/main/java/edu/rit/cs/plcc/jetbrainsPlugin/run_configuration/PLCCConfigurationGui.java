@@ -13,6 +13,7 @@ import edu.rit.cs.plcc.jetbrainsPlugin.util.PLCCToolchain;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Objects;
 
 import static java.util.Objects.isNull;
@@ -20,7 +21,7 @@ import static java.util.Objects.nonNull;
 
 public class PLCCConfigurationGui extends JPanel {
     private JComboBox<Sdk> jdkComboBox;
-    private TextFieldWithBrowseButton plccFile;
+    private TextFieldWithBrowseButton plccFilePicker;
     private JPanel rootPanel;
 
     private final Project project;
@@ -44,11 +45,17 @@ public class PLCCConfigurationGui extends JPanel {
             }
         });
 
-        plccFile.addBrowseFolderListener(new TextBrowseFolderListener(
+        plccFilePicker.addBrowseFolderListener(new TextBrowseFolderListener(
                 new FileChooserDescriptor(true, false, false, false, false, false)
                         .withTitle("Choose PLCC File to Run")
                         .withRoots(ProjectRootManager.getInstance(project).getContentRootsFromAllModules())
         ));
+
+//        var plccSrcDir = ProjectRootManager.getInstance(project).getContentRoots()[0].findChild("plcc");
+//        var plccFileOpt = Arrays.stream(plccSrcDir.getChildren()).filter(e -> e.getName().endsWith(".plcc")).findFirst();
+//        plccFileOpt.ifPresent(plccFile -> {
+//            plccFilePicker.setText(plccFile.getPath());
+//        });
 
         add(rootPanel, BorderLayout.CENTER);
     }
@@ -81,6 +88,6 @@ public class PLCCConfigurationGui extends JPanel {
     }
 
     public String getPlccFile() {
-        return plccFile.getText();
+        return plccFilePicker.getText();
     }
 }

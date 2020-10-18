@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PLCCCommandLineState extends CommandLineState {
 
@@ -23,13 +25,18 @@ public class PLCCCommandLineState extends CommandLineState {
         this.runConfig = runConfig;
     }
 
-    // You should use a run configuration entity class to store the configuration not PropertiesComponent
     @Override
     protected @NotNull ProcessHandler startProcess() throws ExecutionException {
         var plccDir = PropertiesComponent.getInstance().getValue(PLCCToolchain.PLCC_LOCATION_PROPERTY_KEY);
         assert plccDir != null;
-        var plccmk = Paths.get(plccDir, "plccmk").toString();
-        GeneralCommandLine commandLine = new GeneralCommandLine(plccmk)
+        var plccmkPath = Paths.get(plccDir, "plccmk").toString();
+
+        var plccFile = new File(runConfig.getPlccFile()).getName();
+        List<String> commands = new ArrayList<>();
+        commands.add(plccmkPath);
+        commands.add(plccFile);
+
+        GeneralCommandLine commandLine = new GeneralCommandLine(commands)
                 .withWorkDirectory(new File(runConfig.getPlccFile()).getParent())
                 .withEnvironment("LIBPLCC", plccDir);
 
