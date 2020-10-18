@@ -73,7 +73,10 @@ public class PLCCToolchain {
                         break;
 
                     default:
-                        PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, (String)comboBox.getSelectedItem());
+                        var selectedItem = (String)comboBox.getSelectedItem();
+                        var taggedVersion = selectedItem.split(" ")[0];
+                        var plccVersionLocation = PropertiesComponent.getInstance().getValue(taggedVersion);
+                        PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, plccVersionLocation);
                 }
             }
         });
@@ -144,9 +147,10 @@ public class PLCCToolchain {
     }
 
     private void formatAndAddSDKEntry(String version, String path) {
-        String versionWithPath = "plcc".concat("-").concat(version).concat(" (").concat(path).concat(")");
-        PropertiesComponent.getInstance().setValue(versionWithPath, path);
-        PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, versionWithPath);
+        var taggedVerion = "plcc".concat("-").concat(version);
+        var versionWithPath = taggedVerion.concat(" (").concat(path).concat(")");
+        PropertiesComponent.getInstance().setValue(taggedVerion, path);
+        PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, path);
         comboBox.insertItemAt(versionWithPath, 0);
         comboBox.setSelectedIndex(0);
     }

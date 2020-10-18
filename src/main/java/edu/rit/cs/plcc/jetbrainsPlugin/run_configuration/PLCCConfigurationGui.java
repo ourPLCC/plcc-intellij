@@ -16,22 +16,21 @@ import java.awt.*;
 import java.util.Objects;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class PLCCConfigurationGui extends JPanel {
-    private JComboBox<String> plccComboBox;
     private JComboBox<Sdk> jdkComboBox;
-    private TextFieldWithBrowseButton tfwbb;
+    private TextFieldWithBrowseButton plccFile;
     private JPanel rootPanel;
 
-    private Project project;
+    private final Project project;
 
-    private static final String JDK_PROPERTY_VALUE = "jdk";
+    public static final String JDK_PROPERTY_VALUE = "jdk";
 
     public PLCCConfigurationGui(Project project) {
         super(new BorderLayout());
         this.project = project;
 
-        new PLCCToolchain(plccComboBox, this).populateToolchainComboBox();
         for (Sdk item : ProjectJdkTable.getInstance().getAllJdks()) {
             if (item.getSdkType().toString().equals("JavaSDK")) {
                 jdkComboBox.addItem(item);
@@ -45,7 +44,7 @@ public class PLCCConfigurationGui extends JPanel {
             }
         });
 
-        tfwbb.addBrowseFolderListener(new TextBrowseFolderListener(
+        plccFile.addBrowseFolderListener(new TextBrowseFolderListener(
                 new FileChooserDescriptor(true, false, false, false, false, false)
                         .withTitle("Choose PLCC File to Run")
                         .withRoots(ProjectRootManager.getInstance(project).getContentRootsFromAllModules())
@@ -61,12 +60,27 @@ public class PLCCConfigurationGui extends JPanel {
     }
 
     public void checkValidConfiguration() throws ConfigurationException {
-        if (!isNull(PropertiesComponent.getInstance().getValue(JDK_PROPERTY_VALUE))) {
-            if (isNull(PropertiesComponent.getInstance().getValue(PLCCToolchain.PLCC_LOCATION_PROPERTY_KEY))) {
-                throw new ConfigurationException("Select a PLCC instalation from the drop-down. If none exist, use the drop-down to automatically install one");
+        var plccLocation = PropertiesComponent.getInstance().getValue(PLCCToolchain.PLCC_LOCATION_PROPERTY_KEY);
+        if (isNull(plccLocation)) {
+            throw new ConfigurationException("Select a PLCC installation in the project settings. You should have chosen one when you created the project");
+        }
+
+        var sdk = ((Sdk)jdkComboBox.getSelectedItem());
+        if (nonNull(sdk)) {
+            var sdkDir = sdk.getHomeDirectory();
+            if (isNull(sdkDir)) {
+                throw new ConfigurationException("The selected JDK is invalid. Please select another one.");
             }
         } else {
             throw new ConfigurationException("Select a JDK from the drop-down. If none exist, you can download one locally: https://www.jetbrains.com/help/idea/sdk.html#manage_sdks");
         }
+    }
+
+    public String getJdkPath() {
+        return ((Sdk)jdkComboBox.getSelectedItem()).getHomePath();
+    }
+
+    public String getPlccFile() {
+        return plccFile.getText();
     }
 }

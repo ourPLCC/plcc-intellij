@@ -14,6 +14,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class PLCCRunConfiguration extends RunConfigurationBase<RunConfigurationEntity> {
 
+    private String jdkPath;
+
+    private String plccFile;
+
     protected PLCCRunConfiguration(@NotNull Project project, @Nullable ConfigurationFactory factory, @Nullable String name) {
         super(project, factory, name);
     }
@@ -25,6 +29,22 @@ public class PLCCRunConfiguration extends RunConfigurationBase<RunConfigurationE
 
     @Override
     public @Nullable RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment environment) throws ExecutionException {
-        return null;
+        return new PLCCCommandLineState(environment, this);
+    }
+
+    public void setJdkPath(String jdkPath) {
+        this.jdkPath = jdkPath;
+    }
+
+    public void setPlccFile(String plccFile) {
+        this.plccFile = plccFile;
+    }
+
+    public String getJdkPath() {
+        return jdkPath;
+    }
+
+    public String getPlccFile() {
+        return plccFile;
     }
 }

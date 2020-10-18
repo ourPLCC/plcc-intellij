@@ -26,6 +26,8 @@ public class PLCCSettingsEditor extends SettingsEditor<PLCCRunConfiguration> {
     @Override
     protected void applyEditorTo(@NotNull PLCCRunConfiguration s) throws ConfigurationException {
         currConfigGui.checkValidConfiguration();
+        s.setJdkPath(currConfigGui.getJdkPath());
+        s.setPlccFile(currConfigGui.getPlccFile());
     }
 
     @Override
