@@ -20,24 +20,25 @@
 
 // Make sure you remember that this does not operate on longest match first, it is whichever rule is first.
 
-simpleFile ::= regexDefs (SECTION_SEPERATOR EOLS grammarRules)? (SECTION_SEPERATOR EOLS javaInclude)?
+simpleFile ::= regexDefs (separator grammarRules)? (separator javaInclude)?
 
-fillerLines ::= (COMMENT | EOLS)+
+fillerLines ::= (COMMENT | EOL)+
+separator ::= SECTION_SEPERATOR EOL
 
 // token type section
-regexDefs ::= fillerLines? (regexDef EOLS fillerLines?)+
-regexDef ::= SPACES? (tokenDef | skipDef) SPACES? COMMENT?
-tokenDef ::= (TOKEN? SPACES+)? TOKEN_TYPE_NAME SPACES+ REGEX
-skipDef ::= SKIP SPACES+ TOKEN_TYPE_NAME SPACES+ REGEX
+regexDefs ::= fillerLines? (regexDef EOL fillerLines?)+
+regexDef ::= SPACE* (tokenDef | skipDef) SPACE* COMMENT?
+tokenDef ::= (TOKEN? SPACE+)? TOKEN_TYPE_NAME SPACE+ REGEX
+skipDef ::= SKIP SPACE+ TOKEN_TYPE_NAME SPACE+ REGEX
 //
 
 // grammar rules section
-grammarRules ::= fillerLines? (grammarRule EOLS)+
-grammarRule ::= SPACES? (singleMatch | multiMatch) SPACES?
-singleMatch ::= lhs SPACES+ SINGLE_MATCH_RULE (rhs)?
-multiMatch ::= lhs SPACES+ ANY_MATCH_RULE (rhs SPACES+ anyMatchSeperator?)?
+grammarRules ::= fillerLines? (grammarRule EOL fillerLines?)+
+grammarRule ::= SPACE* lhs SPACE+ (singleMatch | multiMatch) SPACE*
+singleMatch ::= SINGLE_MATCH_RULE (rhs)?
+multiMatch ::= ANY_MATCH_RULE (rhs (SPACE+ anyMatchSeperator)?)
 lhs ::= abstractGrammarDef | concreteGrammarDef
-rhs ::= (SPACES+ (namedGrammarUsage | unnamedGrammarUsage | namedCapturedTokenType | unnamedCapturedTokenType| uncapturedTokenType))+
+rhs ::= (SPACE* (namedGrammarUsage | unnamedGrammarUsage | namedCapturedTokenType | unnamedCapturedTokenType | uncapturedTokenType))+
 anyMatchSeperator ::= PLUS TOKEN_TYPE_NAME
 
 concreteGrammarDef ::= LEFT_ANGLE_BRACKET GRAMMAR_DEF_NAME RIGHT_ANGLE_BRACKET
@@ -50,5 +51,5 @@ namedCapturedTokenType ::= unnamedCapturedTokenType GRAMMAR_USAGE_NAME
 uncapturedTokenType ::= TOKEN_TYPE_NAME
 //
 
-javaInclude ::= fillerLines? (includeStatement EOLS)*
-includeStatement ::= SPACES? INCLUDE SPACES+ FILE_NAME SPACES?
+javaInclude ::= fillerLines? ((includeStatement EOL fillerLines?)* (includeStatement fillerLines?))?
+includeStatement ::= SPACE* INCLUDE SPACE+ FILE_NAME SPACE*

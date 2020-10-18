@@ -1,0 +1,12 @@
+[1mdiff --git a/src/main/java/edu/rit/cs/plcc/jetbrainsPlugin/run_configuration/PLCCConfigurationGui.java b/src/main/java/edu/rit/cs/plcc/jetbrainsPlugin/run_configuration/PLCCConfigurationGui.java[m
+[1mindex fba60c7..5feb194 100644[m
+[1m--- a/src/main/java/edu/rit/cs/plcc/jetbrainsPlugin/run_configuration/PLCCConfigurationGui.java[m
+[1m+++ b/src/main/java/edu/rit/cs/plcc/jetbrainsPlugin/run_configuration/PLCCConfigurationGui.java[m
+[36m@@ -13,7 +13,6 @@[m [mimport edu.rit.cs.plcc.jetbrainsPlugin.util.PLCCToolchain;[m
+ [m
+ import javax.swing.*;[m
+ import java.awt.*;[m
+[31m-import java.util.Arrays;[m
+ import java.util.Objects;[m
+ [m
+ import static java.util.Objects.isNull;[m
