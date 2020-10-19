@@ -19,8 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class PLCCParserDefinition implements ParserDefinition {
 
-    public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    public static final TokenSet COMMENTS = TokenSet.create(PLCCTypes.COMMENT);
+    public static final TokenSet WHITE_SPACE = TokenSet.create(TokenType.WHITE_SPACE);
+    public static final TokenSet COMMENT = TokenSet.create(PLCCTypes.COMMENT);
 
     public static final IFileElementType FILE = new IFileElementType(PLCCLanguage.INSTANCE);
 
@@ -33,13 +33,13 @@ public class PLCCParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public TokenSet getWhitespaceTokens() {
-        return WHITE_SPACES;
+        return WHITE_SPACE;
     }
 
     @NotNull
     @Override
     public TokenSet getCommentTokens() {
-        return COMMENTS;
+        return COMMENT;
     }
 
     @NotNull

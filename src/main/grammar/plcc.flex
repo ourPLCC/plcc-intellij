@@ -16,9 +16,11 @@ import com.intellij.psi.TokenType;
 %eof}
 
 EOL = ([\r\n]|\r|\n)
-EOLS = {EOL}+
-WHITESPACE_EXCEPT_NEWLINE = [^\S\r\n]
-WHITESPACES_EXCEPT_NEWLINE = {WHITESPACE_EXCEPT_NEWLINE}+
+//EOLS = {EOL}+
+//WHITESPACE_EXCEPT_NEWLINE = [^\S\r\n]
+//WHITESPACES_EXCEPT_NEWLINE = {WHITESPACE_EXCEPT_NEWLINE}+
+
+WHITESPACE = \s
 IDENTIFIER = [A-Za-z]\w*
 
 COMMENT = #.*
@@ -70,12 +72,6 @@ LOWER_CAMEL_CASE_NAME = [a-z][a-zA-Z0-9]*
     {TOKEN_TYPE_NAME} {
           return PLCCTypes.TOKEN_TYPE_NAME;
       }
-    {WHITESPACES_EXCEPT_NEWLINE} {
-          return PLCCTypes.SPACES;
-      }
-    {EOLS} {
-          return PLCCTypes.EOLS;
-      }
     {SECTION_SEPERATOR} {
           yybegin(GRAMMAR_RULE_LHS);
           return PLCCTypes.SECTION_SEPERATOR;
@@ -110,12 +106,6 @@ LOWER_CAMEL_CASE_NAME = [a-z][a-zA-Z0-9]*
     {LOWER_CAMEL_CASE_NAME} {
           return PLCCTypes.GRAMMAR_DEF_NAME;
       }
-    {WHITESPACES_EXCEPT_NEWLINE} {
-          return PLCCTypes.SPACES;
-      }
-    {EOLS} {
-          return PLCCTypes.EOLS;
-      }
 }
 
 <GRAMMAR_RULE_RHS> {
@@ -134,12 +124,9 @@ LOWER_CAMEL_CASE_NAME = [a-z][a-zA-Z0-9]*
     {TOKEN_TYPE_NAME} {
           return PLCCTypes.TOKEN_TYPE_NAME;
       }
-    {WHITESPACES_EXCEPT_NEWLINE} {
-          return PLCCTypes.SPACES;
-      }
-    {EOLS} {
+    {EOL} {
           yybegin(GRAMMAR_RULE_LHS);
-          return PLCCTypes.EOLS;
+          return TokenType.WHITE_SPACE;
       }
 }
 
@@ -151,14 +138,9 @@ LOWER_CAMEL_CASE_NAME = [a-z][a-zA-Z0-9]*
     {FILE_NAME} {
           return PLCCTypes.FILE_NAME;
       }
-    {WHITESPACES_EXCEPT_NEWLINE} {
-          return PLCCTypes.SPACES;
-      }
-    {EOLS} {
-          return PLCCTypes.EOLS;
-      }
 }
 
 {COMMENT} { return PLCCTypes.COMMENT; }
+{WHITESPACE} {return TokenType.WHITE_SPACE; }
 
 [^] { return TokenType.BAD_CHARACTER; }

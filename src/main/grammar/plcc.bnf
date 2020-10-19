@@ -20,25 +20,23 @@
 
 // Make sure you remember that this does not operate on longest match first, it is whichever rule is first.
 
-simpleFile ::= regexDefs (SECTION_SEPERATOR EOLS grammarRules)? (SECTION_SEPERATOR EOLS javaInclude)?
+simpleFile ::= regexDefs (SECTION_SEPERATOR grammarRules)? (SECTION_SEPERATOR javaInclude)?
 
-fillerLines ::= (COMMENT | EOLS)+
-
-// token type section
-regexDefs ::= fillerLines? (regexDef EOLS fillerLines?)+
-regexDef ::= SPACES? (tokenDef | skipDef) SPACES? COMMENT?
-tokenDef ::= (TOKEN? SPACES+)? TOKEN_TYPE_NAME SPACES+ REGEX
-skipDef ::= SKIP SPACES+ TOKEN_TYPE_NAME SPACES+ REGEX
+// token type section (A plcc file must define at least one token type)
+regexDefs ::= regexDef+
+regexDef ::= (tokenDef | skipDef)
+tokenDef ::= TOKEN? TOKEN_TYPE_NAME REGEX
+skipDef ::= SKIP TOKEN_TYPE_NAME REGEX
 //
 
-// grammar rules section
-grammarRules ::= fillerLines? (grammarRule EOLS)+
-grammarRule ::= SPACES? (singleMatch | multiMatch) SPACES?
-singleMatch ::= lhs SPACES+ SINGLE_MATCH_RULE (rhs)?
-multiMatch ::= lhs SPACES+ ANY_MATCH_RULE (rhs SPACES+ anyMatchSeperator?)?
+// grammar rules section (A plcc file must define at least one grammar rule)
+grammarRules ::= grammarRule+ | COMMENT
+grammarRule ::= (singleMatch | multiMatch)
+singleMatch ::= lhs SINGLE_MATCH_RULE (rhs)?
+multiMatch ::= lhs ANY_MATCH_RULE (rhs anyMatchSeparator?)?
 lhs ::= abstractGrammarDef | concreteGrammarDef
-rhs ::= (SPACES+ (namedGrammarUsage | unnamedGrammarUsage | namedCapturedTokenType | unnamedCapturedTokenType| uncapturedTokenType))+
-anyMatchSeperator ::= PLUS TOKEN_TYPE_NAME
+rhs ::= (namedGrammarUsage | unnamedGrammarUsage | namedCapturedTokenType | unnamedCapturedTokenType| uncapturedTokenType)+
+anyMatchSeparator ::= PLUS TOKEN_TYPE_NAME
 
 concreteGrammarDef ::= LEFT_ANGLE_BRACKET GRAMMAR_DEF_NAME RIGHT_ANGLE_BRACKET
 abstractGrammarDef ::= concreteGrammarDef COLON INSTANTIATED_NAME
@@ -50,5 +48,5 @@ namedCapturedTokenType ::= unnamedCapturedTokenType GRAMMAR_USAGE_NAME
 uncapturedTokenType ::= TOKEN_TYPE_NAME
 //
 
-javaInclude ::= fillerLines? (includeStatement EOLS)*
-includeStatement ::= SPACES? INCLUDE SPACES+ FILE_NAME SPACES?
+javaInclude ::= includeStatement*
+includeStatement ::= INCLUDE FILE_NAME
