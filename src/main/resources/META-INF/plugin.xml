@@ -34,6 +34,11 @@
         <!-- Run configuration -->
         <!-- https://jetbrains.org/intellij/sdk/docs/basics/run_configurations/run_configuration_management.html#configuration-type -->
         <configurationType implementation="edu.rit.cs.plcc.jetbrainsPlugin.run_configuration.PLCCConfigurationType"/>
+
+        <completion.contributor
+                language="PLCC"
+                implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.completion.PLCCCompletionContributor"/>
+
     </extensions>
 
     <actions>
