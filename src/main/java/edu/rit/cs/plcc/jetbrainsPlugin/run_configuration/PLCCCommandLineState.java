@@ -32,9 +32,10 @@ public class PLCCCommandLineState extends CommandLineState {
         var plccmkPath = Paths.get(plccDir, "plccmk").toString();
 
         var plccFile = new File(runConfig.getPlccFile()).getName();
-        List<String> commands = new ArrayList<>();
-        commands.add(plccmkPath);
-        commands.add(plccFile);
+        List<String> commands = new ArrayList<>() {{
+            add(plccmkPath);
+            add(plccFile);
+        }};
 
         GeneralCommandLine commandLine = new GeneralCommandLine(commands)
                 .withWorkDirectory(new File(runConfig.getPlccFile()).getParent())
@@ -42,6 +43,7 @@ public class PLCCCommandLineState extends CommandLineState {
 
         KillableProcessHandler handler = new KillableProcessHandler(commandLine);
         ProcessTerminatedListener.attach(handler, runConfig.getProject());
+//        handler.addProcessListener()
         return handler;
     }
 }

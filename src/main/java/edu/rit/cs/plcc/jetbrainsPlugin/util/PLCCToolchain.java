@@ -81,10 +81,10 @@ public class PLCCToolchain {
             }
         });
 
-        String homeDir = Paths.get(System.getProperty("user.home"), ".plcc").toString();
-        Optional<VirtualFile> dotPlccDir = Optional.ofNullable(LocalFileSystem.getInstance().findFileByIoFile(new File(homeDir)));
-        dotPlccDir.ifPresent(dotPlccDirPresent -> {
-            VirtualFile[] children = dotPlccDirPresent.getChildren();
+        var homeDir = Paths.get(System.getProperty("user.home")).toFile();
+        Optional<VirtualFile> virtualHomeDirOpt = Optional.ofNullable(LocalFileSystem.getInstance().findFileByIoFile(homeDir));
+        virtualHomeDirOpt.ifPresent(virtualHomeDir -> {
+            VirtualFile[] children = virtualHomeDir.getChildren();
             Arrays.stream(children).forEach(child -> {
                 Optional<VirtualFile> possibSrcDir = Optional.ofNullable(child.findChild("src"));
                 if (possibSrcDir.isPresent()) {
@@ -173,9 +173,22 @@ public class PLCCToolchain {
                 VirtualFile file = files.get(0).first;
                 ZipUtil.extract(VfsUtil.virtualToIoFile(file), new File(directory), null);
 
+                var srcDir = Paths.get(directory, plccFolderName, "src").toFile();
+                var virtualSrcDir = LocalFileSystem.getInstance().findFileByIoFile(srcDir);
 
-                return Optional.ofNullable(
-                        LocalFileSystem.getInstance().findFileByIoFile(Paths.get(directory, plccFolderName, "src").toFile()));
+                var osName = System.getProperty("os.name");
+                switch (osName) {
+                    case "Linux":
+                        var plccmk = virtualSrcDir.findChild("plccmk").toNioPath().toFile();
+                        var result = plccmk.setExecutable(true);
+                        if (!result) {
+                            System.out.println("Failed to chmod");
+                        }
+                        break;
+                }
+//
+
+                return Optional.ofNullable(virtualSrcDir);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
                 return Optional.empty();

@@ -1,6 +1,5 @@
 package edu.rit.cs.plcc.jetbrainsPlugin.run_configuration;
 
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
@@ -21,7 +20,7 @@ public class PLCCSettingsEditor extends SettingsEditor<PLCCRunConfiguration> {
 
     @Override
     protected void resetEditorFrom(@NotNull PLCCRunConfiguration s) {
-
+        // We dont save any settings. This is just telling us that createEditor is going to be called I think
     }
 
     @Override

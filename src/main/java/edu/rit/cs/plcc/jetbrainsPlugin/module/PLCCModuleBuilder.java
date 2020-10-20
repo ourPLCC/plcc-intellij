@@ -10,7 +10,6 @@ import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,8 +36,11 @@ public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderLis
         VirtualFile root = contentEntry.getFile();
         assert root != null;
         try {
-            VirtualFile vf = root.createChildDirectory(this, "plcc");
-            contentEntry.addSourceFolder(vf, false);
+            VirtualFile plcc = root.createChildDirectory(this, "plcc");
+            contentEntry.addSourceFolder(plcc, false);
+            VirtualFile generated = root.createChildDirectory(this, "gen");
+            contentEntry.addSourceFolder(generated, false);
+            contentEntry.addExcludeFolder(generated);
         } catch (IOException e) {
             e.printStackTrace();
         }
