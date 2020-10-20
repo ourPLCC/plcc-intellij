@@ -4,15 +4,16 @@ import com.intellij.ide.util.projectWizard.ModuleBuilder;
 import com.intellij.ide.util.projectWizard.ModuleBuilderListener;
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 
@@ -21,6 +22,12 @@ public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderLis
     @Override
     public ModuleType<?> getModuleType() {
         return PLCCModuleType.getInstance();
+    }
+
+    @Override
+    public @Nullable ModuleWizardStep getCustomOptionsStep(WizardContext context, Disposable parentDisposable) {
+        return super.getCustomOptionsStep(context, parentDisposable);
+        // do things here for on the first page?
     }
 
     @Override
@@ -36,12 +43,12 @@ public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderLis
         } catch (IOException e) {
             e.printStackTrace();
         }
+        modifiableRootModel.setSdk(myJdk);
     }
 
     @Override
     public void moduleCreated(@NotNull Module module) {
         // this does not hit for some reason because it is being blocked?
-        System.out.println("HELLO, " + module.getName());
     }
 
     @Override

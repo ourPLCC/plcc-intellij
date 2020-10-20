@@ -1,5 +1,6 @@
 package edu.rit.cs.plcc.jetbrainsPlugin.run_configuration;
 
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
@@ -26,7 +27,6 @@ public class PLCCSettingsEditor extends SettingsEditor<PLCCRunConfiguration> {
     @Override
     protected void applyEditorTo(@NotNull PLCCRunConfiguration s) throws ConfigurationException {
         currConfigGui.checkValidConfiguration();
-        s.setJdkPath(currConfigGui.getJdkPath());
         s.setPlccFile(currConfigGui.getPlccFile());
     }
 

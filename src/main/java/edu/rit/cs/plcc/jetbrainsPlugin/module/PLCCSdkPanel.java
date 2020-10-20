@@ -1,5 +1,6 @@
 package edu.rit.cs.plcc.jetbrainsPlugin.module;
 
+import edu.rit.cs.plcc.jetbrainsPlugin.util.JdkToolchain;
 import edu.rit.cs.plcc.jetbrainsPlugin.util.PLCCToolchain;
 
 import javax.swing.*;
@@ -8,19 +9,21 @@ import java.util.*;
 
 public class PLCCSdkPanel extends JPanel {
     private JPanel rootPanel;
-    private JComboBox comboBox1;
+    private JComboBox plccLocation;
+    private JComboBox jdkComboBox;
 
-    public PLCCSdkPanel() {
+    public PLCCSdkPanel(PLCCModuleWizardStep wizardStep) {
         super(new BorderLayout());
-        new PLCCToolchain(comboBox1, this).populateToolchainComboBox();
+        new PLCCToolchain(plccLocation, this).populateToolchainComboBox();
+        new JdkToolchain(jdkComboBox, wizardStep).populateToolchainComboBox();
         add(rootPanel, BorderLayout.CENTER);
     }
 
-    public Optional<String> getSdk() {
-        if (comboBox1.getSelectedIndex() == -1) {
+    public Optional<String> getPlccLocationEntry() {
+        if (plccLocation.getSelectedIndex() == -1) {
             return Optional.empty();
         } else {
-            return Optional.of((String) Objects.requireNonNull(comboBox1.getSelectedItem()));
+            return Optional.of((String) Objects.requireNonNull(plccLocation.getSelectedItem()));
         }
     }
 }
