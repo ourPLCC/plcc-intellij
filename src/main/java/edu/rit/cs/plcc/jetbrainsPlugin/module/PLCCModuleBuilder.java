@@ -26,8 +26,7 @@ public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderLis
 
     @Override
     public @Nullable ModuleWizardStep getCustomOptionsStep(WizardContext context, Disposable parentDisposable) {
-        return super.getCustomOptionsStep(context, parentDisposable);
-        // do things here for on the first page?
+        return new PLCCModuleWizardStep(this);
     }
 
     @Override
@@ -51,8 +50,4 @@ public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderLis
         // this does not hit for some reason because it is being blocked?
     }
 
-    @Override
-    public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext, @NotNull ModulesProvider modulesProvider) {
-        return new ModuleWizardStep[] {new PLCCModuleWizardStep(this)};
-    }
 }
