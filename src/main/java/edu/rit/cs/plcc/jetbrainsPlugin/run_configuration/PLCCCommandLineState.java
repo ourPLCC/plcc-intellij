@@ -29,11 +29,12 @@ public class PLCCCommandLineState extends CommandLineState {
     protected @NotNull ProcessHandler startProcess() throws ExecutionException {
         var plccDir = PropertiesComponent.getInstance().getValue(PLCCToolchain.PLCC_LOCATION_PROPERTY_KEY);
         assert plccDir != null;
-        var plccmkPath = Paths.get(plccDir, "plccmk").toString();
+        var plccPyPath = Paths.get(plccDir, "plcc.py").toString();
 
         var plccFile = new File(runConfig.getPlccFile()).getName();
         List<String> commands = new ArrayList<>() {{
-            add(plccmkPath);
+            add("python3");
+            add(plccPyPath);
             add(plccFile);
         }};
 
@@ -43,7 +44,6 @@ public class PLCCCommandLineState extends CommandLineState {
 
         KillableProcessHandler handler = new KillableProcessHandler(commandLine);
         ProcessTerminatedListener.attach(handler, runConfig.getProject());
-//        handler.addProcessListener()
         return handler;
     }
 }
