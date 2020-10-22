@@ -55,4 +55,8 @@ public class PLCCConfigurationGui extends JPanel {
     public String getPlccFile() {
         return plccFilePicker.getText();
     }
+
+    public void setPlccFile(String text) {
+        plccFilePicker.setText(text);
+    }
 }
