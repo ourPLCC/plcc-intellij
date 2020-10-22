@@ -12,8 +12,9 @@ In order to run the plugin from source:
 - Install the Grammar-Kit plugin if not installed already
 - Right click on src/main/grammar/plcc.bnf and select 'Generate Parser Code'
 - Right click on src/main/grammar/plcc.flex and select 'Run JFlex Generator'
+- If this is your first time running the JFlex generator, you will be prompted for a directory to install JFlex in. Select the project's root directory.
 - Create a Gradle Run Configuration that runs the Gradle task :runIde
-- Clisk the run button to start an IDE instance with the plugin installed on it
+- Click the run button to start an IDE instance with the plugin installed on it
 
 ## Features
 Check out the [feature list](https://github.com/ourPLCC/plcc-intellij/wiki/Feature-List). Each link has a tutorial.
