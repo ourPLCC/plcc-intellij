@@ -51,16 +51,14 @@ public class PLCCToolchain {
                 switch ((String) Objects.requireNonNull(comboBox.getSelectedItem())) {
                     case ADD_PLCC:
                         Optional<VirtualFile> plccDir = findPlccInstalation();
-                        if (plccDir.isPresent()) {
-                            plccDir.get();
-                        } else {
+                        if (plccDir.isEmpty()) {
                             comboBox.setSelectedIndex(-1);
                         }
                         break;
 
                     case DOWNLOAD_PLCC:
-                        Optional<VirtualFile> plccDir2Opt = downloadAndInstallPlcc();
-                        plccDir2Opt.ifPresentOrElse(plccDir2 -> {
+                        Optional<VirtualFile> plccDirOpt = downloadAndInstallPlcc();
+                        plccDirOpt.ifPresentOrElse(plccDir2 -> {
                             Optional<String> version = readVersion(plccDir2);
                             version.ifPresentOrElse(string -> {
                                 formatAndAddSDKEntry(string, plccDir2.getPath());
@@ -84,15 +82,18 @@ public class PLCCToolchain {
         var homeDir = Paths.get(System.getProperty("user.home")).toFile();
         Optional<VirtualFile> virtualHomeDirOpt = Optional.ofNullable(LocalFileSystem.getInstance().findFileByIoFile(homeDir));
         virtualHomeDirOpt.ifPresent(virtualHomeDir -> {
-            VirtualFile[] children = virtualHomeDir.getChildren();
-            Arrays.stream(children).forEach(child -> {
-                Optional<VirtualFile> possibSrcDir = Optional.ofNullable(child.findChild("src"));
-                if (possibSrcDir.isPresent()) {
-                    if (possibSrcDir.get().findChild("plcc.py") != null) {
-                        Optional<String> version = readVersion(possibSrcDir.get());
-                        version.ifPresent(s -> formatAndAddSDKEntry(s, possibSrcDir.get().getPath()));
+            var plccDirOpt = Optional.ofNullable(virtualHomeDir.findChild(".plcc"));
+            plccDirOpt.ifPresent(plccDir -> {
+                VirtualFile[] plccInstalations = plccDir.getChildren();
+                Arrays.stream(plccInstalations).forEach(child -> {
+                    Optional<VirtualFile> possibSrcDir = Optional.ofNullable(child.findChild("src"));
+                    if (possibSrcDir.isPresent()) {
+                        if (possibSrcDir.get().findChild("plcc.py") != null) {
+                            Optional<String> version = readVersion(possibSrcDir.get());
+                            version.ifPresent(s -> formatAndAddSDKEntry(s, possibSrcDir.get().getPath()));
+                        }
                     }
-                }
+                });
             });
         });
 
