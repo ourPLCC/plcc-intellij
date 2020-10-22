@@ -36,11 +36,10 @@ public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderLis
         VirtualFile root = contentEntry.getFile();
         assert root != null;
         try {
-            VirtualFile plcc = root.createChildDirectory(this, "plcc");
-            contentEntry.addSourceFolder(plcc, false);
-            VirtualFile generated = root.createChildDirectory(this, "gen");
-            contentEntry.addSourceFolder(generated, false);
-            contentEntry.addExcludeFolder(generated);
+            var plcc = root.createChildDirectory(this, "plcc");
+            plcc.createChildData(this, project.getName().concat(".plcc"));
+            var javaDir = plcc.createChildDirectory(this, "Java");
+            contentEntry.addSourceFolder(javaDir, false);
         } catch (IOException e) {
             e.printStackTrace();
         }
