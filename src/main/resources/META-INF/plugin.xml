@@ -1,10 +1,21 @@
 <idea-plugin>
+    <version>0.0.1</version>
     <id>edu.rit.cs.plcc.jetbrainsPlugin</id>
     <name>PLCC</name>
     <vendor email="mdn4993@rit.edu" url="https://github.com/ourPLCC">OurPLCC</vendor>
 
     <description><![CDATA[
-    Programming language compiler compiler jetbrains plugin for syntax highlighting and autocompletion for grammar files
+    RIT Programming Language Compiler Compiler (PLCC) plugin to aid in development. <br>
+    Features include: <br>
+    <ul>
+        <li>New project creation with one click tool download</li>
+        <li>New -> PLCC File shortcut</li>
+        <li>.plcc file syntax highlighting</li>
+        <li>Syntax error underlining</li>
+        <li>Multi-line comment shortcut</li>
+        <li>PLCC file compile run configuration</li>
+        <li>Run a REPL for the language in the IDE</li>
+    </ul>
     ]]></description>
 
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
@@ -34,11 +45,6 @@
         <!-- Run configuration -->
         <!-- https://jetbrains.org/intellij/sdk/docs/basics/run_configurations/run_configuration_management.html#configuration-type -->
         <configurationType implementation="edu.rit.cs.plcc.jetbrainsPlugin.run_configuration.PLCCConfigurationType"/>
-
-        <completion.contributor
-                language="PLCC"
-                implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.completion.PLCCCompletionContributor"/>
-
     </extensions>
 
     <actions>
