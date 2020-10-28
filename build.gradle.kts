@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "org.example"
-version = "1.0-SNAPSHOT"
+version = "0.0.2"
 
 repositories {
     mavenCentral()
@@ -20,8 +20,9 @@ intellij {
 }
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
     changeNotes("""
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>""")
+      Initial release of the plugin. Minimal features are implemented so far.
+      """)
+    version("0.0.2")
 }
 
 sourceSets["main"].java.srcDirs("src/main/gen")

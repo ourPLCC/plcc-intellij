@@ -1,5 +1,4 @@
 <idea-plugin>
-    <version>0.0.1</version>
     <id>edu.rit.cs.plcc.jetbrainsPlugin</id>
     <name>PLCC</name>
     <vendor email="mdn4993@rit.edu" url="https://github.com/ourPLCC">OurPLCC</vendor>
@@ -53,4 +52,5 @@
             class="edu.rit.cs.plcc.jetbrainsPlugin.lang.NewPlccFile">
         </action>
     </actions>
+
 </idea-plugin>
