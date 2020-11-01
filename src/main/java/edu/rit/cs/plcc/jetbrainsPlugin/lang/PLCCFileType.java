@@ -1,7 +1,7 @@
 package edu.rit.cs.plcc.jetbrainsPlugin.lang;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import edu.rit.cs.plcc.jetbrainsPlugin.util.PLCCIcon;
+import edu.rit.cs.plcc.jetbrainsPlugin.util.PlccIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +36,7 @@ public class PLCCFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return PLCCIcon.ICON;
+        return PlccIcons.x16;
     }
 
 }

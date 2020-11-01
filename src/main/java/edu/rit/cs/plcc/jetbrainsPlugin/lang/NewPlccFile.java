@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsActions;
 import com.intellij.openapi.util.NlsContexts;
 import com.intellij.psi.PsiDirectory;
-import edu.rit.cs.plcc.jetbrainsPlugin.util.PLCCIcon;
+import edu.rit.cs.plcc.jetbrainsPlugin.util.PlccIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -14,7 +14,7 @@ import javax.swing.*;
 public class NewPlccFile extends CreateFileFromTemplateAction {
 
     public NewPlccFile() {
-        super("New PLCC File", "Create a new PLCC file", PLCCIcon.ICON);
+        super("New PLCC File", "Create a new PLCC file", PlccIcons.x16);
     }
 
     public NewPlccFile(@NlsActions.ActionText String text, @NlsActions.ActionDescription String description, Icon icon) {
@@ -23,7 +23,7 @@ public class NewPlccFile extends CreateFileFromTemplateAction {
 
     @Override
     protected void buildDialog(@NotNull Project project, @NotNull PsiDirectory directory, CreateFileFromTemplateDialog.@NotNull Builder builder) {
-        builder.addKind("File", PLCCIcon.ICON, "PLCC File");
+        builder.addKind("File", PlccIcons.x16, "PLCC File");
     }
 
     @Override
