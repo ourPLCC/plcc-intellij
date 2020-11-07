@@ -6,6 +6,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PLCCTokenType;
 import edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PLCCTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,6 +44,10 @@ public class PLCCSyntaxHighlighter extends SyntaxHighlighterBase {
             createTextAttributesKey("PLCC_RIGHT_ANGLE_BRACKET", DefaultLanguageHighlighterColors.OPERATION_SIGN);
     public static final TextAttributesKey COLON =
             createTextAttributesKey("PLCC_COLON", DefaultLanguageHighlighterColors.SEMICOLON);
+    public static final TextAttributesKey GRAMMAR_NAME_CLASS_NAME =
+            createTextAttributesKey("PLCC_GRAMMAR_NAME_CLASS_NAME", DefaultLanguageHighlighterColors.CLASS_NAME);
+    public static final TextAttributesKey CODE_BLOCK_BOUNDARY =
+            createTextAttributesKey("PLCC_CODE_BLOCK_BOUNDARY", DefaultLanguageHighlighterColors.BRACES);
 
     private static final TextAttributesKey[] TOKEN_KEYS = new TextAttributesKey[] {TOKEN};
     private static final TextAttributesKey[] SKIP_KEYS = new TextAttributesKey[] {SKIP};
@@ -59,6 +64,8 @@ public class PLCCSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] LEFT_ANGLE_BRACKET_KEYS = new TextAttributesKey[] {LEFT_ANGLE_BRACKET};
     private static final TextAttributesKey[] RIGHT_ANGLE_BRACKET_KEYS = new TextAttributesKey[] {RIGHT_ANGLE_BRACKET};
     private static final TextAttributesKey[] COLON_KEYS = new TextAttributesKey[] {COLON};
+    private static final TextAttributesKey[] GRAMMAR_NAME_CLASS_NAME_KEYS = new TextAttributesKey[] {GRAMMAR_NAME_CLASS_NAME};
+    private static final TextAttributesKey[] CODE_BLOCK_BOUNDARY_KEYS = new TextAttributesKey[] {CODE_BLOCK_BOUNDARY};
 
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{};
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
@@ -95,6 +102,10 @@ public class PLCCSyntaxHighlighter extends SyntaxHighlighterBase {
             return RIGHT_ANGLE_BRACKET_KEYS;
         } else if (tokenType.equals(PLCCTypes.COLON)) {
             return COLON_KEYS;
+        } else if (tokenType.equals(PLCCTypes.GRAMMAR_NAME_CLASS_NAME)) {
+            return GRAMMAR_NAME_CLASS_NAME_KEYS;
+        } else if (tokenType.equals(PLCCTypes.CODE_BLOCK_BOUNDARY)) {
+            return CODE_BLOCK_BOUNDARY_KEYS;
         }
 
         else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
