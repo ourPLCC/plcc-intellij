@@ -23,7 +23,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
 
-        <!-- File type and syntax structure -->
+        <!-- File type and syntax structure for PLCC -->
         <fileType name="PLCC File" implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCFileType"
                   fieldName="INSTANCE" language="PLCC" extensions="plcc"/>
         <lang.parserDefinition language="PLCC"
@@ -31,6 +31,10 @@
         <lang.syntaxHighlighterFactory language="PLCC"
                                        implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCSyntaxHighlighterFactory"/>
         <internalFileTemplate name="PLCC File"/>
+
+        <!-- File type for IJava files -->
+        <fileType name="IJava File" implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.ijava.IJavaFileType"
+                  fieldName="INSTANCE" language="IJava" extensions="ijava"/>
 
         <!-- Comment with Ctrl+/ -->
         <lang.commenter language="PLCC"
