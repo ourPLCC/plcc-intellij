@@ -54,7 +54,7 @@ LOWER_CAMEL_CASE_NAME = [a-z][a-zA-Z0-9]*
 
 CODE_BLOCK_BOUNDARY = %%%
 
-JAVA_CODE = [^%]+
+JAVA_CODE = .+
 
 // We are using YYINITIAL to be the lexical specification defining state
 %state GRAMMAR_RULE_LHS

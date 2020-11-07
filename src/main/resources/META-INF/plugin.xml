@@ -32,9 +32,12 @@
                                        implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCSyntaxHighlighterFactory"/>
         <internalFileTemplate name="PLCC File"/>
 
-        <!-- File type for IJava files -->
+        <!-- File type and syntax structure for IJava files -->
         <fileType name="IJava File" implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.ijava.IJavaFileType"
                   fieldName="INSTANCE" language="IJava" extensions="ijava"/>
+        <lang.parserDefinition language="IJava"
+                               implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.ijava.IJavaParserDefinition"/>
+        <internalFileTemplate name="IJava File"/>
 
         <!-- Comment with Ctrl+/ -->
         <lang.commenter language="PLCC"
@@ -48,13 +51,19 @@
         <!-- Run configuration -->
         <!-- https://jetbrains.org/intellij/sdk/docs/basics/run_configurations/run_configuration_management.html#configuration-type -->
         <configurationType implementation="edu.rit.cs.plcc.jetbrainsPlugin.run_configuration.PLCCConfigurationType"/>
+
     </extensions>
 
     <actions>
-        <action
-            id="PLCC.NewPlccFile"
-            class="edu.rit.cs.plcc.jetbrainsPlugin.lang.NewPlccFile">
+
+        <action id="PLCC.NewPlccFile"
+                class="edu.rit.cs.plcc.jetbrainsPlugin.actions.NewPlccFile">
         </action>
+
+        <action id="IJava.NewIJavaFile"
+                class="edu.rit.cs.plcc.jetbrainsPlugin.actions.NewIJavaFile">
+        </action>
+
     </actions>
 
 </idea-plugin>

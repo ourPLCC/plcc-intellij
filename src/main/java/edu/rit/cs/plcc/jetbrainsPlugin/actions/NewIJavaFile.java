@@ -1,4 +1,4 @@
-package edu.rit.cs.plcc.jetbrainsPlugin.lang;
+package edu.rit.cs.plcc.jetbrainsPlugin.actions;
 
 import com.intellij.ide.actions.CreateFileFromTemplateAction;
 import com.intellij.ide.actions.CreateFileFromTemplateDialog;
@@ -6,24 +6,24 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.NlsActions;
 import com.intellij.openapi.util.NlsContexts;
 import com.intellij.psi.PsiDirectory;
-import edu.rit.cs.plcc.jetbrainsPlugin.util.PlccIcons;
+import edu.rit.cs.plcc.jetbrainsPlugin.util.IJavaIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public class NewPlccFile extends CreateFileFromTemplateAction {
+public class NewIJavaFile extends CreateFileFromTemplateAction {
 
-    public NewPlccFile() {
-        super("New PLCC File", "Create a new PLCC file", PlccIcons.x16);
+    public NewIJavaFile() {
+        super("New IJava File", "Create a new IJava file", IJavaIcons.x16);
     }
 
-    public NewPlccFile(@NlsActions.ActionText String text, @NlsActions.ActionDescription String description, Icon icon) {
+    public NewIJavaFile(@NlsActions.ActionText String text, @NlsActions.ActionDescription String description, Icon icon) {
         super(text, description, icon);
     }
 
     @Override
     protected void buildDialog(@NotNull Project project, @NotNull PsiDirectory directory, CreateFileFromTemplateDialog.@NotNull Builder builder) {
-        builder.addKind("File", PlccIcons.x16, "PLCC File");
+        builder.addKind("File", IJavaIcons.x16, "IJava File");
     }
 
     @Override
