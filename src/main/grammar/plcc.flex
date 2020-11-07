@@ -35,7 +35,7 @@ RIGHT_ANGLE_BRACKET = >
 
 //FULL_GRAMMAR_NAME = {LEFT_ANGLE_BRACKET}{IDENTIFIER}{RIGHT_ANGLE_BRACKET}
 //GRAMMAR_NAME_ABSTRACT = {FULL_GRAMMAR_NAME}{COLON}{INSTANTIATED_NAME}
-INSTANTIATED_NAME = [A-Z][a-zA-Z0-9]*
+UPPER_CAMEL_CASE_NAME = [A-Z][a-zA-Z0-9]*
 
 SINGLE_MATCH_RULE = ::=
 ANY_MATCH_RULE = \*\*=
@@ -61,6 +61,7 @@ JAVA_CODE = [^%]+
 %state JAVA_INCLUDE
 %state GRAMMAR_RULE_RHS
 %state IN_CODE_BLOCK
+%state IN_INCLUDE
 
 %%
 
@@ -91,7 +92,7 @@ JAVA_CODE = [^%]+
     {COLON} {
           return PLCCTypes.COLON;
       }
-    {INSTANTIATED_NAME} {
+    {UPPER_CAMEL_CASE_NAME} {
           return PLCCTypes.INSTANTIATED_NAME;
       }
     {LEFT_ANGLE_BRACKET} {
@@ -138,14 +139,21 @@ JAVA_CODE = [^%]+
 
 <JAVA_INCLUDE> {
     {INCLUDE} {
+          yybegin(IN_INCLUDE);
           return PLCCTypes.INCLUDE;
       }
-    {FILE_NAME} {
-          return PLCCTypes.FILE_NAME;
+    {UPPER_CAMEL_CASE_NAME} {
+          return PLCCTypes.GRAMMAR_NAME_CLASS_NAME;
       }
     {CODE_BLOCK_BOUNDARY} {
           yybegin(IN_CODE_BLOCK);
           return PLCCTypes.CODE_BLOCK_BOUNDARY;
+      }
+}
+<IN_INCLUDE> {
+    {FILE_NAME} {
+          yybegin(JAVA_INCLUDE);
+          return PLCCTypes.FILE_NAME;
       }
 }
 <IN_CODE_BLOCK> {
