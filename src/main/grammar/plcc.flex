@@ -52,10 +52,15 @@ COLON = :
 
 LOWER_CAMEL_CASE_NAME = [a-z][a-zA-Z0-9]*
 
+CODE_BLOCK_BOUNDARY = %%%
+
+JAVA_CODE = [^%]+
+
 // We are using YYINITIAL to be the lexical specification defining state
 %state GRAMMAR_RULE_LHS
 %state JAVA_INCLUDE
 %state GRAMMAR_RULE_RHS
+%state IN_CODE_BLOCK
 
 %%
 
@@ -137,6 +142,19 @@ LOWER_CAMEL_CASE_NAME = [a-z][a-zA-Z0-9]*
       }
     {FILE_NAME} {
           return PLCCTypes.FILE_NAME;
+      }
+    {CODE_BLOCK_BOUNDARY} {
+          yybegin(IN_CODE_BLOCK);
+          return PLCCTypes.CODE_BLOCK_BOUNDARY;
+      }
+}
+<IN_CODE_BLOCK> {
+    {CODE_BLOCK_BOUNDARY} {
+          yybegin(JAVA_INCLUDE);
+          return PLCCTypes.CODE_BLOCK_BOUNDARY;
+      }
+    {JAVA_CODE} {
+          return PLCCTypes.JAVA_CODE;
       }
 }
 
