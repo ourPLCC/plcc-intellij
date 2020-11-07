@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "org.example"
-version = "0.0.2"
+version = "0.0.3"
 
 repositories {
     mavenCentral()
@@ -20,9 +20,11 @@ intellij {
 }
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
     changeNotes("""
-      Initial release of the plugin. Minimal features are implemented so far.
+        Added support for defining java code blocks in a plcc file
+        Added support for .ijava files (files with java code blocks corresponding to a grammar rule) with syntax recognition (and syntax errors are caught)
+        There is now a plugin icon
       """)
-    version("0.0.2")
+    version("0.0.3")
 }
 
 sourceSets["main"].java.srcDirs("src/main/gen")
