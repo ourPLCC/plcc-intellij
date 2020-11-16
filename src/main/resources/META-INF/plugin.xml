@@ -20,6 +20,7 @@
     <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
 
@@ -52,11 +53,13 @@
         <!-- https://jetbrains.org/intellij/sdk/docs/basics/run_configurations/run_configuration_management.html#configuration-type -->
         <configurationType implementation="edu.rit.cs.plcc.jetbrainsPlugin.run_configuration.PLCCConfigurationType"/>
 
-        <lang.findUsagesProvider language="PLCC"
-                                 implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PlccFindUsagesProvider"/>
+<!--        <lang.findUsagesProvider language="PLCC"-->
+<!--                                 implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PlccFindUsagesProvider"/>-->
 
-        <completion.contributor language="PLCC"
-                                implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCCompletionContributor"/>
+<!--        <completion.contributor language="PLCC"-->
+<!--                                implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCCompletionContributor"/>-->
+
+        <psi.referenceContributor implementation="edu.rit.cs.plcc.jetbrainsPlugin.lang.PlccReferenceContributor"/>
 
     </extensions>
 

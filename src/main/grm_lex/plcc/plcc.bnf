@@ -25,9 +25,9 @@ simpleFile ::= regexDefs (SECTION_SEPERATOR grammarRules)? (SECTION_SEPERATOR ja
 regexDefs ::= regexDef+
 regexDef ::= (tokenDef | skipDef)
 tokenDef ::= TOKEN? TOKEN_TYPE_NAME REGEX { // this is buggy because there is a question mark at the beginning
-    mixin="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl.PlccNamedElementImpl"
-    implements="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PlccNamedElement"
-    methods=[getName getNameIdentifier setName]
+//    mixin="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl.PlccNamedElementImpl"
+//    implements="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PlccNamedElement"
+//    methods=[getName getNameIdentifier setName]
 }
 skipDef ::= SKIP TOKEN_TYPE_NAME REGEX
 //

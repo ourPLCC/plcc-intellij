@@ -18,24 +18,27 @@ public class PlccUtil {
                 .filter(x -> x instanceof PLCCRegexDefsImpl)
                 .findFirst();
         if (regexDefsOpt.isEmpty()) {
+            System.out.println("NULE");
             return null;
         }
 
         var regexDefs = regexDefsOpt.get();
         System.out.println("regex defs: " + regexDefs);
 
-        var r = Arrays.stream(regexDefs.getChildren())
+        var regexDefStream = Arrays.stream(regexDefs.getChildren())
                 .filter(x -> x instanceof PLCCRegexDefImpl);
 
-        var s = r.map(x -> {
+        var s = regexDefStream.map(x -> {
             return Arrays.stream(x.getChildren())
                     .filter(y -> y instanceof PLCCTokenDefImpl).findFirst().get();
         }).filter(x -> {
             var l = ((PLCCTokenDefImpl) x).getNode().findChildByType(PLCCTypes.TOKEN_TYPE_NAME);
-            return l != null;
+            assert l != null;
+            return l.getText().equals(text);
         }).findFirst();
 
         if (s.isEmpty()) {
+            System.out.println("NUUUl");
             return null;
         } else {
             return (PLCCTokenDef) s.get();

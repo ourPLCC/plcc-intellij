@@ -1,14 +1,12 @@
 package edu.rit.cs.plcc.jetbrainsPlugin.lang;
 
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl.PLCCUncapturedTokenTypeImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-import java.util.Objects;
+import static java.util.Objects.nonNull;
 
 public class PlccReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
 
@@ -16,6 +14,7 @@ public class PlccReference extends PsiReferenceBase<PsiElement> implements PsiPo
 
     public PlccReference(@NotNull PsiElement element, TextRange rangeInElement) {
         super(element, rangeInElement);
+        System.out.println("New PLCC Reference!");
         key = element.getText().substring(rangeInElement.getStartOffset(), rangeInElement.getEndOffset());
     }
 
@@ -23,7 +22,13 @@ public class PlccReference extends PsiReferenceBase<PsiElement> implements PsiPo
     public @NotNull ResolveResult @NotNull [] multiResolve(boolean incompleteCode) {
         System.out.println("MyElement = " + myElement);
         if (myElement instanceof PLCCUncapturedTokenTypeImpl) {
-            return new ResolveResult[] {new PsiElementResolveResult(Objects.requireNonNull(PlccUtil.findRegexReference(myElement, key))) };
+            var references = PlccUtil.findRegexReference(myElement, key);
+            if (nonNull(references)) {
+                return new ResolveResult[] { new PsiElementResolveResult(references) };
+            } else {
+                return new ResolveResult[0];
+            }
+
         } else {
             return new ResolveResult[0];
         }
