@@ -52,6 +52,12 @@
         <!-- https://jetbrains.org/intellij/sdk/docs/basics/run_configurations/run_configuration_management.html#configuration-type -->
         <configurationType implementation="edu.rit.cs.plcc.jetbrainsPlugin.run_configuration.PLCCConfigurationType"/>
 
+        <lang.findUsagesProvider language="PLCC"
+                                 implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PlccFindUsagesProvider"/>
+
+        <completion.contributor language="PLCC"
+                                implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCCompletionContributor"/>
+
     </extensions>
 
     <actions>

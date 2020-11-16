@@ -3,7 +3,6 @@ package edu.rit.cs.plcc.jetbrainsPlugin.util;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -20,15 +19,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class PLCCToolchain {
 
-    private final JComboBox comboBox;
+    private final JComboBox<String> comboBox;
     private final Component parent;
 
     private static final String DOWNLOAD_PLCC = "Download and Install PLCC";
@@ -36,7 +32,7 @@ public class PLCCToolchain {
 
     public static final String PLCC_LOCATION_PROPERTY_KEY = "SelectedPLCCToolchain";
 
-    public PLCCToolchain(JComboBox comboBox, Component parent) {
+    public PLCCToolchain(JComboBox<String> comboBox, Component parent) {
         this.comboBox = comboBox;
         this.parent = parent;
     }
@@ -60,9 +56,7 @@ public class PLCCToolchain {
                         Optional<VirtualFile> plccDirOpt = downloadAndInstallPlcc();
                         plccDirOpt.ifPresentOrElse(plccDir2 -> {
                             Optional<String> version = readVersion(plccDir2);
-                            version.ifPresentOrElse(string -> {
-                                formatAndAddSDKEntry(string, plccDir2.getPath());
-                            }, () -> {
+                            version.ifPresentOrElse(string -> formatAndAddSDKEntry(string, plccDir2.getPath()), () -> {
                                 // already threw stack trace
                             });
                         }, () -> {
@@ -105,11 +99,8 @@ public class PLCCToolchain {
 
         if (libPlccDir != null && libPlccDir.findChild("plcc.py") != null) {
             Optional<String> version = readVersion(libPlccDir);
-            version.ifPresentOrElse(versionPresent -> {
-                formatAndAddSDKEntry(versionPresent, libPlccPath.get());
-            }, () -> {
-                new IOException("No version file found in LIBPLCC directory with a plcc.py file").printStackTrace();
-            });
+            version.ifPresentOrElse(versionPresent -> formatAndAddSDKEntry(versionPresent, libPlccPath.get()),
+                    () -> new IOException("No version file found in LIBPLCC directory with a plcc.py file").printStackTrace());
         }
     }
 
@@ -176,18 +167,6 @@ public class PLCCToolchain {
 
                 var srcDir = Paths.get(directory, plccFolderName, "src").toFile();
                 var virtualSrcDir = LocalFileSystem.getInstance().findFileByIoFile(srcDir);
-
-                var osName = System.getProperty("os.name");
-                switch (osName) {
-                    case "Linux":
-                        var plccmk = virtualSrcDir.findChild("plccmk").toNioPath().toFile();
-                        var result = plccmk.setExecutable(true);
-                        if (!result) {
-                            System.out.println("Failed to chmod");
-                        }
-                        break;
-                }
-//
 
                 return Optional.ofNullable(virtualSrcDir);
             } catch (IOException ioe) {

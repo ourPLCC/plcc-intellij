@@ -1,9 +1,7 @@
 package edu.rit.cs.plcc.jetbrainsPlugin.util;
 
-import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ProjectRootManager;
 import edu.rit.cs.plcc.jetbrainsPlugin.module.PLCCModuleWizardStep;
 
 import javax.swing.*;

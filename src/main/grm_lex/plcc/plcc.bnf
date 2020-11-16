@@ -12,25 +12,28 @@
   elementTypeClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PLCCElementType"
   tokenTypeClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PLCCTokenType"
 
-  psiImplUtilClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl.PLCCPsiImplUtil"
+  psiImplUtilClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl.PlccPsiImplUtil"
 }
 
 // For some reason, the parser model returning one space compared to multiple spaces does not work? this is why
 // I am currently using SPACES and EOLS. Mabye this is fixed now that I removed TokenType.WHITE_SPACE
 
 // Make sure you remember that this does not operate on longest match first, it is whichever rule is first.
-
 simpleFile ::= regexDefs (SECTION_SEPERATOR grammarRules)? (SECTION_SEPERATOR javaInclude)?
 
 // token type section (A plcc file must define at least one token type)
 regexDefs ::= regexDef+
 regexDef ::= (tokenDef | skipDef)
-tokenDef ::= TOKEN? TOKEN_TYPE_NAME REGEX
+tokenDef ::= TOKEN? TOKEN_TYPE_NAME REGEX { // this is buggy because there is a question mark at the beginning
+    mixin="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl.PlccNamedElementImpl"
+    implements="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PlccNamedElement"
+    methods=[getName getNameIdentifier setName]
+}
 skipDef ::= SKIP TOKEN_TYPE_NAME REGEX
 //
 
 // grammar rules section (A plcc file must define at least one grammar rule)
-grammarRules ::= grammarRule+ | COMMENT
+grammarRules ::= grammarRule+
 grammarRule ::= (singleMatch | multiMatch)
 singleMatch ::= lhs SINGLE_MATCH_RULE (rhs)?
 multiMatch ::= lhs ANY_MATCH_RULE (rhs anyMatchSeparator?)?
@@ -45,9 +48,15 @@ unnamedGrammarUsage ::= LEFT_ANGLE_BRACKET GRAMMAR_USAGE_NAME RIGHT_ANGLE_BRACKE
 namedGrammarUsage ::= unnamedGrammarUsage GRAMMAR_USAGE_NAME
 unnamedCapturedTokenType ::= LEFT_ANGLE_BRACKET TOKEN_TYPE_NAME RIGHT_ANGLE_BRACKET
 namedCapturedTokenType ::= unnamedCapturedTokenType GRAMMAR_USAGE_NAME
-uncapturedTokenType ::= TOKEN_TYPE_NAME
+uncapturedTokenType ::= TOKEN_TYPE_NAME {
+    mixin="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.impl.PlccNamedElementImpl"
+    implements="edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PlccNamedElement"
+    methods=[getName getNameIdentifier setName]
+}
 //
 
 javaInclude ::= (includeStatement | javaCodeBlock)*
 includeStatement ::= INCLUDE FILE_NAME
 javaCodeBlock ::= GRAMMAR_NAME_CLASS_NAME CODE_BLOCK_BOUNDARY JAVA_CODE CODE_BLOCK_BOUNDARY
+
+junk ::= COMMENT // I know this is not used, but for some reason a COMMENT character is not generated if not
