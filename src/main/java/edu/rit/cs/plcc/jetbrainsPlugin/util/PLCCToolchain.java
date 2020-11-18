@@ -3,7 +3,6 @@ package edu.rit.cs.plcc.jetbrainsPlugin.util;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtil;
@@ -20,11 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 public class PLCCToolchain {
 
@@ -74,9 +70,9 @@ public class PLCCToolchain {
                         break;
 
                     default:
-                        var selectedItem = (String)comboBox.getSelectedItem();
-                        var taggedVersion = selectedItem.split(" ")[0];
-                        var plccVersionLocation = PropertiesComponent.getInstance().getValue(taggedVersion);
+                        val selectedItem = (String)comboBox.getSelectedItem();
+                        val taggedVersion = selectedItem.split(" ")[0];
+                        val plccVersionLocation = PropertiesComponent.getInstance().getValue(taggedVersion);
                         PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, plccVersionLocation);
                 }
             }
@@ -152,9 +148,9 @@ public class PLCCToolchain {
 
         if (version != null) {
             val path = plccDir.getPath();
-            var taggedVerion = "plcc".concat("-").concat(version);
-            var versionWithPath = taggedVerion.concat(" (").concat(path).concat(")");
-            PropertiesComponent.getInstance().setValue(taggedVerion, path);
+            val taggedVersion = "plcc".concat("-").concat(version);
+            val versionWithPath = taggedVersion.concat(" (").concat(path).concat(")");
+            PropertiesComponent.getInstance().setValue(taggedVersion, path);
             PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, path);
             comboBox.insertItemAt(versionWithPath, 0);
             comboBox.setSelectedIndex(0);
@@ -176,15 +172,12 @@ public class PLCCToolchain {
             return null; // yes I want to use null
         }
 
-
         val downloadedFileName = plccFolderName.concat(".zip");
-
         val fileService = DownloadableFileService.getInstance();
         val fileDescription = fileService.createFileDescription(
                 "https://github.com/ourPLCC/plcc/archive/v2.0.1.zip", downloadedFileName);
         val downloader = fileService.createDownloader(
                 new ArrayList<>() {{add(fileDescription);}}, downloadedFileName);
-
         @Nullable List<Pair<VirtualFile, DownloadableFileDescription>> files = downloader.downloadWithProgress(downloadDirectory, null, null);
         if (files != null && files.size() == 1) {
             try {
@@ -193,18 +186,6 @@ public class PLCCToolchain {
 
                 val srcDir = Paths.get(downloadDirectory, plccFolderName, "src").toFile();
                 val virtualSrcDir = LocalFileSystem.getInstance().findFileByIoFile(srcDir);
-
-                var osName = System.getProperty("os.name");
-                switch (osName) {
-                    case "Linux":
-                        var plccmk = virtualSrcDir.findChild("plccmk").toNioPath().toFile();
-                        var result = plccmk.setExecutable(true);
-                        if (!result) {
-                            System.out.println("Failed to chmod");
-                        }
-                        break;
-                }
-//
 
                 return Optional.ofNullable(virtualSrcDir);
             } catch (IOException ioe) {
