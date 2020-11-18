@@ -48,9 +48,11 @@ public class PLCCToolchain {
                     case ADD_PLCC:
                         val plccDir = findPlccInstallation();
                         if (plccDir != null) {
-                            if (!formatAndAddSDKEntry(plccDir)){
+                            if (!formatAndAddSDKEntry(plccDir)) {
                                 comboBox.setSelectedIndex(-1);
                             }
+                        } else {
+                            comboBox.setSelectedIndex(-1);
                         }
                         break;
 
@@ -65,7 +67,10 @@ public class PLCCToolchain {
                                 JOptionPane.showMessageDialog(parent,
                                         "Failed to download PLCC", null,
                                         JOptionPane.ERROR_MESSAGE);
+                                comboBox.setSelectedIndex(-1);
                             }
+                        } else {
+                            comboBox.setSelectedIndex(-1);
                         }
                         break;
 

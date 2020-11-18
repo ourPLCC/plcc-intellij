@@ -35,7 +35,7 @@ grammarRule ::= (singleMatch | multiMatch)
 singleMatch ::= lhs SINGLE_MATCH_RULE (rhs)?
 multiMatch ::= lhs ANY_MATCH_RULE (rhs anyMatchSeparator?)?
 lhs ::= abstractGrammarDef | concreteGrammarDef
-rhs ::= (namedGrammarUsage | unnamedGrammarUsage | namedCapturedTokenType | unnamedCapturedTokenType| uncapturedTokenType)+
+rhs ::= (namedGrammarUsage | unnamedGrammarUsage | namedCapturedTokenType | unnamedCapturedTokenType | uncapturedTokenType)+
 anyMatchSeparator ::= PLUS TOKEN_TYPE_NAME
 
 concreteGrammarDef ::= LEFT_ANGLE_BRACKET GRAMMAR_DEF_NAME RIGHT_ANGLE_BRACKET
