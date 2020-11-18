@@ -10,8 +10,8 @@ import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.download.DownloadableFileDescription;
 import com.intellij.util.download.DownloadableFileService;
-import com.intellij.util.download.FileDownloader;
 import com.intellij.util.io.ZipUtil;
+import lombok.val;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -50,24 +50,27 @@ public class PLCCToolchain {
             if (e.getActionCommand().equals("comboBoxChanged")) {
                 switch ((String) Objects.requireNonNull(comboBox.getSelectedItem())) {
                     case ADD_PLCC:
-                        Optional<VirtualFile> plccDir = findPlccInstalation();
-                        if (plccDir.isEmpty()) {
-                            comboBox.setSelectedIndex(-1);
+                        val plccDir = findPlccInstallation();
+                        if (plccDir != null) {
+                            if (!formatAndAddSDKEntry(plccDir)){
+                                comboBox.setSelectedIndex(-1);
+                            }
                         }
                         break;
 
                     case DOWNLOAD_PLCC:
                         Optional<VirtualFile> plccDirOpt = downloadAndInstallPlcc();
-                        plccDirOpt.ifPresentOrElse(plccDir2 -> {
-                            Optional<String> version = readVersion(plccDir2);
-                            version.ifPresentOrElse(string -> {
-                                formatAndAddSDKEntry(string, plccDir2.getPath());
-                            }, () -> {
-                                // already threw stack trace
-                            });
-                        }, () -> {
-                            // already threw stack trace
-                        });
+                        if (plccDirOpt != null) {  // don't replace with Optional.isPresent()
+                            if (plccDirOpt.isPresent()) {
+                                if (!formatAndAddSDKEntry(plccDirOpt.get())) {
+                                    comboBox.setSelectedIndex(-1);
+                                }
+                            } else {
+                                JOptionPane.showMessageDialog(parent,
+                                        "Failed to download PLCC", null,
+                                        JOptionPane.ERROR_MESSAGE);
+                            }
+                        }
                         break;
 
                     default:
@@ -79,103 +82,117 @@ public class PLCCToolchain {
             }
         });
 
-        var homeDir = Paths.get(System.getProperty("user.home")).toFile();
-        Optional<VirtualFile> virtualHomeDirOpt = Optional.ofNullable(LocalFileSystem.getInstance().findFileByIoFile(homeDir));
-        virtualHomeDirOpt.ifPresent(virtualHomeDir -> {
-            var plccDirOpt = Optional.ofNullable(virtualHomeDir.findChild(".plcc"));
-            plccDirOpt.ifPresent(plccDir -> {
-                VirtualFile[] plccInstalations = plccDir.getChildren();
-                Arrays.stream(plccInstalations).forEach(child -> {
-                    Optional<VirtualFile> possibSrcDir = Optional.ofNullable(child.findChild("src"));
-                    if (possibSrcDir.isPresent()) {
-                        if (possibSrcDir.get().findChild("plcc.py") != null) {
-                            Optional<String> version = readVersion(possibSrcDir.get());
-                            version.ifPresent(s -> formatAndAddSDKEntry(s, possibSrcDir.get().getPath()));
-                        }
-                    }
-                });
-            });
-        });
+        val homeDir = Paths.get(System.getProperty("user.home")).toFile();
+        val virtualHomeDir = LocalFileSystem.getInstance().findFileByIoFile(homeDir);
 
-        Optional<String> libPlccPath = Optional.ofNullable(System.getenv("LIBPLCC"));
-        VirtualFile libPlccDir = null;
-        if (libPlccPath.isPresent()) {
-            libPlccDir = LocalFileSystem.getInstance().findFileByIoFile(new File(libPlccPath.get()));
+        if (virtualHomeDir != null) {
+            val plccDir = virtualHomeDir.findChild(".plcc");
+
+            if (plccDir != null) {
+                val plccInstallations = plccDir.getChildren();
+
+                if (plccInstallations != null) {
+                    Arrays.stream(plccInstallations).forEach(plccInstallation -> {
+                        val srcDir = plccInstallation.findChild("src");
+
+                        if (srcDir != null) {
+                            if (srcDir.findChild("plcc.py") != null) {
+                                formatAndAddSDKEntry(srcDir);
+                            }
+                        }
+                    });
+                }
+            }
         }
 
-        if (libPlccDir != null && libPlccDir.findChild("plcc.py") != null) {
-            Optional<String> version = readVersion(libPlccDir);
-            version.ifPresentOrElse(versionPresent -> {
-                formatAndAddSDKEntry(versionPresent, libPlccPath.get());
-            }, () -> {
-                new IOException("No version file found in LIBPLCC directory with a plcc.py file").printStackTrace();
-            });
+        val libPlccPath = System.getenv("LIBPLCC");
+        if (libPlccPath != null) {
+            val libPlccDir = LocalFileSystem.getInstance().findFileByIoFile(new File(libPlccPath));
+
+            if (libPlccDir != null && libPlccDir.findChild("plcc.py") != null) {
+                formatAndAddSDKEntry(libPlccDir);
+            }
+        } else {
+            System.out.println("No LIBPLCC environment variable set. This is ok.");
         }
     }
 
-    private Optional<VirtualFile> findPlccInstalation() {
+    private VirtualFile findPlccInstallation() {
         FileChooserDescriptor desc = new FileChooserDescriptor(false, true, false, false, false, false);
-        Optional<VirtualFile> selectedDir = Optional.ofNullable(FileChooser.chooseFile(desc, null, null));
+        val selectedDir = FileChooser.chooseFile(desc, null, null);
 
-        if (selectedDir.isEmpty()) {
-            return Optional.empty();
+        if (selectedDir == null) {
+            return null;
         }
 
-        Optional<VirtualFile> possibSrcDir = Optional.ofNullable(selectedDir.get().findChild("src"));
-        VirtualFile srcDir;
-
-        if (possibSrcDir.isEmpty()) {
-            if (selectedDir.get().getName().equals("src")) {
-                srcDir = selectedDir.get();
+        var srcDir = selectedDir.findChild("src");
+        if (srcDir == null) {
+            if (selectedDir.getName().equals("src")) {
+                srcDir = selectedDir;
             } else {
                 JOptionPane.showMessageDialog(parent,
                         "Selected directory is not called 'src' and/or does not contain one",
                         null, JOptionPane.ERROR_MESSAGE);
-                return Optional.empty();
+                return null;
             }
-        } else {
-            srcDir = possibSrcDir.get();
         }
 
         if (srcDir.findChild("plcc.py") != null) {
-            return Optional.of(possibSrcDir.get());
+            return srcDir;
         } else {
             JOptionPane.showMessageDialog(parent,
-                    "Selected directory does not contain the PLCC tool", null,
+                    "Selected directory does not contain plcc.py", null,
                     JOptionPane.ERROR_MESSAGE);
+            return null;
         }
-        return Optional.empty();
     }
 
-    private void formatAndAddSDKEntry(String version, String path) {
-        var taggedVerion = "plcc".concat("-").concat(version);
-        var versionWithPath = taggedVerion.concat(" (").concat(path).concat(")");
-        PropertiesComponent.getInstance().setValue(taggedVerion, path);
-        PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, path);
-        comboBox.insertItemAt(versionWithPath, 0);
-        comboBox.setSelectedIndex(0);
+    private boolean formatAndAddSDKEntry(VirtualFile plccDir) {
+        val version = readVersion(plccDir);
+
+        if (version != null) {
+            val path = plccDir.getPath();
+            var taggedVerion = "plcc".concat("-").concat(version);
+            var versionWithPath = taggedVerion.concat(" (").concat(path).concat(")");
+            PropertiesComponent.getInstance().setValue(taggedVerion, path);
+            PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, path);
+            comboBox.insertItemAt(versionWithPath, 0);
+            comboBox.setSelectedIndex(0);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // stole most of this implementation from
     // https://github.com/bulenkov/RedlineSmalltalk/blob/master/src/st/redline/smalltalk/module/RsSdkPanel.java
     private Optional<VirtualFile> downloadAndInstallPlcc() {
-        String plccFolderName = "plcc-2.0.1";
-        String downloadedFileName = plccFolderName.concat(".zip");
-        DownloadableFileService fileService = DownloadableFileService.getInstance();
-        DownloadableFileDescription fileDescription = fileService.createFileDescription(
+        val downloadDirectory = Paths.get(System.getProperty("user.home"), ".plcc").toString();
+        val plccFolderName = "plcc-2.0.1";
+        if (LocalFileSystem.getInstance().findFileByIoFile(Paths.get(downloadDirectory, plccFolderName).toFile()) != null) {
+            JOptionPane.showMessageDialog(parent,
+                    plccFolderName + " is already downloaded in " + downloadDirectory,
+                    null, JOptionPane.ERROR_MESSAGE);
+            return null; // yes I want to use null
+        }
+
+
+        val downloadedFileName = plccFolderName.concat(".zip");
+
+        val fileService = DownloadableFileService.getInstance();
+        val fileDescription = fileService.createFileDescription(
                 "https://github.com/ourPLCC/plcc/archive/v2.0.1.zip", downloadedFileName);
-        FileDownloader downloader = fileService.createDownloader(
+        val downloader = fileService.createDownloader(
                 new ArrayList<>() {{add(fileDescription);}}, downloadedFileName);
 
-        String directory = Paths.get(System.getProperty("user.home"), ".plcc").toString();
-        @Nullable List<Pair<VirtualFile, DownloadableFileDescription>> files = downloader.downloadWithProgress(directory, null, null);
+        @Nullable List<Pair<VirtualFile, DownloadableFileDescription>> files = downloader.downloadWithProgress(downloadDirectory, null, null);
         if (files != null && files.size() == 1) {
             try {
-                VirtualFile file = files.get(0).first;
-                ZipUtil.extract(VfsUtil.virtualToIoFile(file), new File(directory), null);
+                val file = files.get(0).first;
+                ZipUtil.extract(VfsUtil.virtualToIoFile(file), new File(downloadDirectory), null);
 
-                var srcDir = Paths.get(directory, plccFolderName, "src").toFile();
-                var virtualSrcDir = LocalFileSystem.getInstance().findFileByIoFile(srcDir);
+                val srcDir = Paths.get(downloadDirectory, plccFolderName, "src").toFile();
+                val virtualSrcDir = LocalFileSystem.getInstance().findFileByIoFile(srcDir);
 
                 var osName = System.getProperty("os.name");
                 switch (osName) {
@@ -200,13 +217,13 @@ public class PLCCToolchain {
         }
     }
 
-    private Optional<String> readVersion(VirtualFile file) {
+    private String readVersion(VirtualFile file) {
         try {
-            return Optional.of(Files.readString(Paths.get(file.getPath(), "VERSION")));
+            return Files.readString(Paths.get(file.getPath(), "VERSION"));
         } catch (IOException e) {
-            System.err.println("File: " + file.getPath() + " does not contain a VERSION file!");
+            System.err.println("Possible PLCC installation: " + file.getPath() + " does not contain a VERSION file!");
             e.printStackTrace();
+            return null;
         }
-        return Optional.empty();
     }
 }

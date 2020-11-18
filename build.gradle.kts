@@ -1,6 +1,7 @@
 plugins {
     id("org.jetbrains.intellij") version "0.4.21"
     java
+    id("io.freefair.lombok") version "5.3.0"
 }
 
 group = "org.example"
