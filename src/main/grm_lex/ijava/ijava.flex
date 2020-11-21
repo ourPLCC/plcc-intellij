@@ -22,7 +22,7 @@ UPPER_CAMEL_CASE_NAME = [A-Z][a-zA-Z0-9]*
 
 CODE_BLOCK_BOUNDARY = %%%
 
-JAVA_CODE = .+
+JAVA_LINE = .+
 
 %state IN_CODE_BLOCK
 
@@ -43,8 +43,8 @@ JAVA_CODE = .+
           yybegin(YYINITIAL);
           return IJavaTypes.CODE_BLOCK_BOUNDARY;
       }
-    {JAVA_CODE} {
-          return IJavaTypes.JAVA_CODE;
+    {JAVA_LINE} {
+          return IJavaTypes.JAVA_LINE;
       }
 }
 
