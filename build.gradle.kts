@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.example"
-version = "0.0.3"
+version = "0.0.4"
 
 repositories {
     mavenCentral()
@@ -21,11 +21,11 @@ intellij {
 }
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
     changeNotes("""
-        Added support for defining java code blocks in a plcc file
-        Added support for .ijava files (files with java code blocks corresponding to a grammar rule) with syntax recognition (and syntax errors are caught)
-        There is now a plugin icon
+        Fixed some bugs in specifying a PLCC installation in the Project Setup Wizard
+        Fixed Java code not being recognised in a Java code block for plcc and ijava files 
+        Fixed include file REGEX in a plcc file to recognise files with a file extension
       """)
-    version("0.0.3")
+    version("0.0.4")
 }
 
 sourceSets["main"].java.srcDirs("src/main/gen")
