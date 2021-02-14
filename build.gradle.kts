@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.example"
-version = "0.0.4"
+version = "0.0.5"
 
 repositories {
     mavenCentral()
@@ -21,11 +21,9 @@ intellij {
 }
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
     changeNotes("""
-        Fixed some bugs in specifying a PLCC installation in the Project Setup Wizard
-        Fixed Java code not being recognised in a Java code block for plcc and ijava files 
-        Fixed include file REGEX in a plcc file to recognise files with a file extension
+        Made the plugin forward compatible by default with newer Intellij platform versions.
       """)
-    version("0.0.4")
+    version("0.0.5")
 }
 
 sourceSets["main"].java.srcDirs("src/main/gen")
