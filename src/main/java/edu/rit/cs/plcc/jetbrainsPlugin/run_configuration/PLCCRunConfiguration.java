@@ -29,7 +29,6 @@ public class PLCCRunConfiguration extends RunConfigurationBase<RunConfigurationE
 
     @Override
     public @NotNull SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
-        System.out.println("creatingConfigurationEditor");
         return new PLCCSettingsEditor(getProject());
     }
 
@@ -70,16 +69,12 @@ public class PLCCRunConfiguration extends RunConfigurationBase<RunConfigurationE
     @Override
     public void readExternal(@NotNull Element element) throws InvalidDataException {
         super.readExternal(element);
-        System.out.println("ELEMENT: " + element.getName());
 
         var parent = element.getChild(PLCC_CONFIGS_ELEMENT);
         if (isNull(parent)) {
-            System.out.println("Parent is null");
             return;
         }
 
-        System.out.println("Parent is " + parent.getName());
         plccFile = parent.getChildText(PLCC_FILE_ELEMENT_FIELD);
-        System.out.println("PLCC file is " + plccFile);
     }
 }
