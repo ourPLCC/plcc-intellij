@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.example"
-version = "0.0.5"
+version = "0.0.6"
 
 repositories {
     mavenCentral()
@@ -21,9 +21,9 @@ intellij {
 }
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
     changeNotes("""
-        Made the plugin forward compatible by default with newer Intellij platform versions.
+        Now compatible with all 2020 versions of Intellij.
       """)
-    version("0.0.5")
+    version("0.0.6")
 }
 
 sourceSets["main"].java.srcDirs("src/main/gen")
