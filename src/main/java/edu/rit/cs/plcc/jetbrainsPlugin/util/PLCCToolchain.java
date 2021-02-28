@@ -5,7 +5,6 @@ import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.download.DownloadableFileDescription;
 import com.intellij.util.download.DownloadableFileService;
@@ -24,7 +23,7 @@ import java.util.*;
 
 public class PLCCToolchain {
 
-    private final JComboBox comboBox;
+    private final JComboBox<String> comboBox;
     private final Component parent;
 
     private static final String DOWNLOAD_PLCC = "Download and Install PLCC";
@@ -32,7 +31,7 @@ public class PLCCToolchain {
 
     public static final String PLCC_LOCATION_PROPERTY_KEY = "SelectedPLCCToolchain";
 
-    public PLCCToolchain(JComboBox comboBox, Component parent) {
+    public PLCCToolchain(JComboBox<String> comboBox, Component parent) {
         this.comboBox = comboBox;
         this.parent = parent;
     }
@@ -126,7 +125,7 @@ public class PLCCToolchain {
             return null;
         }
 
-        var srcDir = selectedDir.findChild("src");
+        VirtualFile srcDir = selectedDir.findChild("src");
         if (srcDir == null) {
             if (selectedDir.getName().equals("src")) {
                 srcDir = selectedDir;
@@ -168,13 +167,25 @@ public class PLCCToolchain {
     // stole most of this implementation from
     // https://github.com/bulenkov/RedlineSmalltalk/blob/master/src/st/redline/smalltalk/module/RsSdkPanel.java
     private Optional<VirtualFile> downloadAndInstallPlcc() {
-        val downloadDirectory = Paths.get(System.getProperty("user.home"), ".plcc").toString();
+        val homeDir = Paths.get(System.getProperty("user.home"), ".plcc").toString();
         val plccFolderName = "plcc-2.0.1";
-        if (LocalFileSystem.getInstance().findFileByIoFile(Paths.get(downloadDirectory, plccFolderName).toFile()) != null) {
+        val fileToDownload = Paths.get(homeDir, plccFolderName).toString();
+        if (LocalFileSystem.getInstance().findFileByIoFile(Paths.get(fileToDownload).toFile()) != null) {
             JOptionPane.showMessageDialog(parent,
-                    plccFolderName + " is already downloaded in " + downloadDirectory,
-                    null, JOptionPane.ERROR_MESSAGE);
+                    plccFolderName.concat(" is already downloaded in ").concat(homeDir),
+                    null,
+                    JOptionPane.ERROR_MESSAGE);
             return null; // yes I want to use null
+        } else {
+            val answer = JOptionPane.showConfirmDialog(
+                    parent,
+                    "PLCC will be downloaded in\n".concat(fileToDownload).concat("\nDo you wish to proceed?"),
+                    null,
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (answer != JOptionPane.YES_OPTION) {
+                return null; // yes I want to use null
+            }
         }
 
         val downloadedFileName = plccFolderName.concat(".zip");
@@ -183,13 +194,12 @@ public class PLCCToolchain {
                 "https://github.com/ourPLCC/plcc/archive/v2.0.1.zip", downloadedFileName);
         val downloader = fileService.createDownloader(
                 new ArrayList<>() {{add(fileDescription);}}, downloadedFileName);
-        @Nullable List<Pair<VirtualFile, DownloadableFileDescription>> files = downloader.downloadWithProgress(downloadDirectory, null, null);
+        @Nullable List<Pair<VirtualFile, DownloadableFileDescription>> files = downloader.downloadWithProgress(homeDir, null, null);
         if (files != null && files.size() == 1) {
             try {
-                val file = files.get(0).first;
-                ZipUtil.extract(VfsUtil.virtualToIoFile(file), new File(downloadDirectory), null);
+                ZipUtil.extract(Paths.get(fileToDownload.concat(".zip")), Paths.get(homeDir), null);
 
-                val srcDir = Paths.get(downloadDirectory, plccFolderName, "src").toFile();
+                val srcDir = Paths.get(homeDir, plccFolderName, "src").toFile();
                 val virtualSrcDir = LocalFileSystem.getInstance().findFileByIoFile(srcDir);
 
                 return Optional.ofNullable(virtualSrcDir);

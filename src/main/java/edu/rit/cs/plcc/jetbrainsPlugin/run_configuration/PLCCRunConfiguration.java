@@ -9,6 +9,7 @@ import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
+import lombok.val;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,7 +50,7 @@ public class PLCCRunConfiguration extends RunConfigurationBase<RunConfigurationE
     public void writeExternal(@NotNull Element element) {
         super.writeExternal(element);
 
-        var plccParent = element.getChild(PLCC_CONFIGS_ELEMENT);
+        Element plccParent = element.getChild(PLCC_CONFIGS_ELEMENT);
 
         // Create a new parent when there is no parent present.
         if (plccParent == null) {
@@ -61,7 +62,7 @@ public class PLCCRunConfiguration extends RunConfigurationBase<RunConfigurationE
             plccParent.removeContent();
         }
 
-        var fileElem = new Element(PLCC_FILE_ELEMENT_FIELD);
+        val fileElem = new Element(PLCC_FILE_ELEMENT_FIELD);
         fileElem.setText(plccFile);
         plccParent.addContent(fileElem);
     }
@@ -70,7 +71,7 @@ public class PLCCRunConfiguration extends RunConfigurationBase<RunConfigurationE
     public void readExternal(@NotNull Element element) throws InvalidDataException {
         super.readExternal(element);
 
-        var parent = element.getChild(PLCC_CONFIGS_ELEMENT);
+        val parent = element.getChild(PLCC_CONFIGS_ELEMENT);
         if (isNull(parent)) {
             return;
         }

@@ -22,7 +22,7 @@ public class NewPlccFile extends CreateFileFromTemplateAction {
     }
 
     @Override
-    protected void buildDialog(@NotNull Project project, @NotNull PsiDirectory directory, CreateFileFromTemplateDialog.@NotNull Builder builder) {
+    protected void buildDialog(@NotNull Project project, @NotNull PsiDirectory directory, CreateFileFromTemplateDialog.Builder builder) {
         builder.addKind("File", PlccIcons.x16, "PLCC File");
     }
 

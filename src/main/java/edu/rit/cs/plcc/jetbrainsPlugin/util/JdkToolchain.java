@@ -1,28 +1,26 @@
 package edu.rit.cs.plcc.jetbrainsPlugin.util;
 
-import com.intellij.ide.util.projectWizard.ModuleWizardStep;
 import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ProjectRootManager;
 import edu.rit.cs.plcc.jetbrainsPlugin.module.PLCCModuleWizardStep;
+import lombok.val;
 
 import javax.swing.*;
 import java.util.Objects;
 
 public class JdkToolchain {
 
-    private final JComboBox jdkComboBox;
+    private final JComboBox<Sdk> jdkComboBox;
 
     private final PLCCModuleWizardStep wizardStep;
 
-    public JdkToolchain(JComboBox jdkComboBox, PLCCModuleWizardStep wizardStep) {
+    public JdkToolchain(JComboBox<Sdk> jdkComboBox, PLCCModuleWizardStep wizardStep) {
         this.jdkComboBox = jdkComboBox;
         this.wizardStep = wizardStep;
     }
 
     public void populateToolchainComboBox() {
-
-        for (Sdk item : ProjectJdkTable.getInstance().getAllJdks()) {
+        for (val item : ProjectJdkTable.getInstance().getAllJdks()) {
             if (item.getSdkType().toString().equals("JavaSDK")) {
                 jdkComboBox.addItem(item);
             }

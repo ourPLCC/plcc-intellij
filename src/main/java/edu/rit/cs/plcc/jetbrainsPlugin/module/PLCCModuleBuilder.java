@@ -7,10 +7,8 @@ import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
-import com.intellij.openapi.options.ConfigurationException;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.vfs.VirtualFile;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,16 +27,16 @@ public class PLCCModuleBuilder extends ModuleBuilder implements ModuleBuilderLis
     }
 
     @Override
-    public void setupRootModel(@NotNull ModifiableRootModel modifiableRootModel) throws ConfigurationException {
-        Project project = modifiableRootModel.getProject();
-        var contentEntry = doAddContentEntry(modifiableRootModel);
+    public void setupRootModel(@NotNull ModifiableRootModel modifiableRootModel) {
+        val project = modifiableRootModel.getProject();
+        val contentEntry = doAddContentEntry(modifiableRootModel);
         assert contentEntry != null;
-        VirtualFile root = contentEntry.getFile();
+        val root = contentEntry.getFile();
         assert root != null;
         try {
-            var plcc = root.createChildDirectory(this, "plcc");
+            val plcc = root.createChildDirectory(this, "plcc");
             plcc.createChildData(this, project.getName().concat(".plcc"));
-            var javaDir = plcc.createChildDirectory(this, "Java");
+            val javaDir = plcc.createChildDirectory(this, "Java");
             contentEntry.addSourceFolder(javaDir, false);
         } catch (IOException e) {
             e.printStackTrace();

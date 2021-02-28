@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    testCompile("junit", "junit", "4.12")
+
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
@@ -22,8 +22,8 @@ intellij {
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
     changeNotes("""
         Now compatible with all 2020 versions of Intellij.
-      """)
-    version("0.0.6")
+    """)
+    version(version)
 }
 
 sourceSets["main"].java.srcDirs("src/main/gen")
