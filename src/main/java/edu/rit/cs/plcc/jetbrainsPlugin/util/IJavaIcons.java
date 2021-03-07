@@ -4,7 +4,7 @@ import com.intellij.openapi.util.IconLoader;
 
 import javax.swing.*;
 
-public class IJavaIcons {
+public interface IJavaIcons {
 
-    public static final Icon x16 = IconLoader.getIcon("/icons/IJavaIconx16.svg");
+    Icon x16 = IconLoader.getIcon("/icons/IJavaIconx16.svg", IJavaIcons.class);
 }
