@@ -9,10 +9,14 @@ import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import lombok.val;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.File;
+import java.util.Arrays;
 
 import static java.util.Objects.isNull;
 
@@ -23,9 +27,10 @@ public class PLCCRunConfiguration extends RunConfigurationBase<RunConfigurationE
     private static final String PLCC_CONFIGS_ELEMENT = "plcc";
     private static final String PLCC_FILE_ELEMENT_FIELD = "plccFile";
 
+    // called once per project
     protected PLCCRunConfiguration(@NotNull Project project, @Nullable ConfigurationFactory factory, @Nullable String name) {
         super(project, factory, name);
-        plccFile = "";
+        inferCurrentPlccFile();
     }
 
     @Override
@@ -77,5 +82,40 @@ public class PLCCRunConfiguration extends RunConfigurationBase<RunConfigurationE
         }
 
         plccFile = parent.getChildText(PLCC_FILE_ELEMENT_FIELD);
+    }
+
+    public void inferCurrentPlccFile() {
+        plccFile = inferPlccFile();
+    }
+
+    // if a plcc file is flat in the project dir return it or one of them if there are many,
+    // if a plcc file is in the /plcc dir, return it or one if there are many
+    // if any of the above fail, return empty string
+    private String inferPlccFile() {
+        val projectBasePath = getProject().getBasePath();
+        if (projectBasePath != null) {
+            val baseDir = LocalFileSystem.getInstance().findFileByIoFile(new File(projectBasePath));
+            if (baseDir != null) {
+                val baseDirChildren = baseDir.getChildren();
+                if (baseDirChildren != null) {
+                    val flatPlccFile = Arrays.stream(baseDirChildren).filter(x -> x.getName().endsWith(".plcc")).findAny();
+                    if (flatPlccFile.isPresent()) {
+                        return flatPlccFile.get().getPath();
+                    } else {
+                        val plccDir = baseDir.findChild("plcc");
+                        if (plccDir != null) {
+                            val plccDirChildren = plccDir.getChildren();
+                            if (plccDirChildren != null) {
+                                val plccFileInPlccDir = Arrays.stream(plccDirChildren).filter(x -> x.getName().endsWith(".plcc")).findAny();
+                                if (plccFileInPlccDir.isPresent()) {
+                                    return plccFileInPlccDir.get().getPath();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return "";
     }
 }
