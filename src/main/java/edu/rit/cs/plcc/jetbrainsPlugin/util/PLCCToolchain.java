@@ -3,35 +3,33 @@ package edu.rit.cs.plcc.jetbrainsPlugin.util;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.util.download.DownloadableFileDescription;
 import com.intellij.util.download.DownloadableFileService;
 import com.intellij.util.io.ZipUtil;
 import lombok.val;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.Optional;
 
 public class PLCCToolchain {
 
     private final JComboBox<String> comboBox;
-    private final Component parent;
+    private final JComponent parent;
 
     private static final String DOWNLOAD_PLCC = "Download and Install PLCC";
     private static final String ADD_PLCC = "Add PLCC from filesystem";
 
-    public static final String PLCC_LOCATION_PROPERTY_KEY = "SelectedPLCCToolchain";
+    public static final String PLCC_LOCATION_PROPERTY_KEY = "edu.rit.cs.plcc.jetbrainsPlugin.SelectedPLCCToolchain";
 
-    public PLCCToolchain(JComboBox<String> comboBox, Component parent) {
+    public PLCCToolchain(JComboBox<String> comboBox, JComponent parent) {
         this.comboBox = comboBox;
         this.parent = parent;
     }
@@ -77,6 +75,7 @@ public class PLCCToolchain {
                         val selectedItem = (String)comboBox.getSelectedItem();
                         val taggedVersion = selectedItem.split(" ")[0];
                         val plccVersionLocation = PropertiesComponent.getInstance().getValue(taggedVersion);
+                        // TODO remove this value in the global persistent state when the Project object is available for the first time
                         PropertiesComponent.getInstance().setValue(PLCC_LOCATION_PROPERTY_KEY, plccVersionLocation);
                 }
             }
@@ -194,7 +193,7 @@ public class PLCCToolchain {
                 "https://github.com/ourPLCC/plcc/archive/v2.0.1.zip", downloadedFileName);
         val downloader = fileService.createDownloader(
                 new ArrayList<>() {{add(fileDescription);}}, downloadedFileName);
-        @Nullable List<Pair<VirtualFile, DownloadableFileDescription>> files = downloader.downloadWithProgress(homeDir, null, null);
+        val files = downloader.downloadFilesWithProgress(homeDir, null, parent);
         if (files != null && files.size() == 1) {
             try {
                 ZipUtil.extract(Paths.get(fileToDownload.concat(".zip")), Paths.get(homeDir), null);
