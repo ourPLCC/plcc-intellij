@@ -22,7 +22,6 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-
         <!-- File type and syntax structure for PLCC -->
         <fileType name="PLCC File" implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCFileType"
                   fieldName="INSTANCE" language="PLCC" extensions="plcc"/>
@@ -52,18 +51,17 @@
         <!-- https://jetbrains.org/intellij/sdk/docs/basics/run_configurations/run_configuration_management.html#configuration-type -->
         <configurationType implementation="edu.rit.cs.plcc.jetbrainsPlugin.run_configuration.PLCCConfigurationType"/>
 
+        <!-- PLCC Run Button in Gutter -->
+        <runLineMarkerContributor language="PLCC" implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.gutter.PlccGutterRun"/>
     </extensions>
 
     <actions>
-
         <action id="PLCC.NewPlccFile"
                 class="edu.rit.cs.plcc.jetbrainsPlugin.actions.NewPlccFile">
         </action>
-
         <action id="IJava.NewIJavaFile"
                 class="edu.rit.cs.plcc.jetbrainsPlugin.actions.NewIJavaFile">
         </action>
-
     </actions>
 
 </idea-plugin>
