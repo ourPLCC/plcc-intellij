@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PLCCConfigurationFactory extends ConfigurationFactory {
 
-    protected PLCCConfigurationFactory(@NotNull ConfigurationType type) {
+    public PLCCConfigurationFactory(@NotNull ConfigurationType type) {
         super(type);
     }
 
