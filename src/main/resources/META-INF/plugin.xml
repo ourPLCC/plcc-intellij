@@ -53,15 +53,18 @@
 
         <!-- PLCC Run Button in Gutter -->
         <runLineMarkerContributor language="PLCC" implementationClass="edu.rit.cs.plcc.jetbrainsPlugin.gutter.PlccGutterRun"/>
+        <runConfigurationProducer implementation="edu.rit.cs.plcc.jetbrainsPlugin.gutter.PlccRunConfigurationProducer"/>
     </extensions>
 
     <actions>
+        <!-- New files -->
         <action id="PLCC.NewPlccFile"
-                class="edu.rit.cs.plcc.jetbrainsPlugin.actions.NewPlccFile">
-        </action>
+                class="edu.rit.cs.plcc.jetbrainsPlugin.actions.NewPlccFile"/>
         <action id="IJava.NewIJavaFile"
-                class="edu.rit.cs.plcc.jetbrainsPlugin.actions.NewIJavaFile">
-        </action>
+                class="edu.rit.cs.plcc.jetbrainsPlugin.actions.NewIJavaFile"/>
+
+        <action id="PLCC.RunFromGutter"
+                class="edu.rit.cs.plcc.jetbrainsPlugin.gutter.RunFileFromGutterAction"/>
     </actions>
 
 </idea-plugin>

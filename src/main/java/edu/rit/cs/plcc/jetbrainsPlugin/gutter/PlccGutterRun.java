@@ -1,7 +1,6 @@
 package edu.rit.cs.plcc.jetbrainsPlugin.gutter;
 
 import com.intellij.execution.lineMarker.RunLineMarkerContributor;
-import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.psi.PsiElement;
 import edu.rit.cs.plcc.jetbrainsPlugin.lang.parser_model.PLCCTypes;
 import lombok.val;
@@ -29,13 +28,12 @@ public class PlccGutterRun extends RunLineMarkerContributor {
 
         val fileName = psiElement.getContainingFile().getName();
 
-        val actionManager = ActionManager.getInstance();
-        val editConfigs = actionManager.getAction("editRunConfigurations");
+        // call setup run configuration context on the run configuration producer and call execute on the run configuration returned. wrap all that up in an anaction
 
         return new Info(
                 runIcon,
                 x -> "Run ".concat(fileName).concat(" with PLCC"),
-                editConfigs
+                new RunFileFromGutterAction()
         );
     }
 }
