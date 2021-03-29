@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 import static edu.rit.cs.plcc.jetbrainsPlugin.util.Icons.runIcon;
 
+// The user should have to only click the run button to run, not select the first item in the list after clicking it.
 public class PlccGutterRun extends RunLineMarkerContributor {
 
     @Override
