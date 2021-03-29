@@ -3,6 +3,7 @@ package edu.rit.cs.plcc.jetbrainsPlugin.gutter;
 import com.intellij.execution.actions.ConfigurationContext;
 import com.intellij.execution.actions.LazyRunConfigurationProducer;
 import com.intellij.execution.configurations.ConfigurationFactory;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
 import edu.rit.cs.plcc.jetbrainsPlugin.lang.PLCCFileType;
@@ -46,7 +47,18 @@ public class PlccRunConfigurationProducer extends LazyRunConfigurationProducer<P
 
     @Override
     public boolean isConfigurationFromContext(@NotNull PLCCRunConfiguration plccRunConfiguration, @NotNull ConfigurationContext configurationContext) {
-        return true;
+        val thisPsiFile = configurationContext.getDataContext().getData(PlatformDataKeys.PSI_FILE);
+        if (thisPsiFile == null) {
+            return false;
+        }
+        val currentFile = thisPsiFile.getVirtualFile();
+        if (currentFile == null) {
+            return false;
+        }
+
+        val mainFile = plccRunConfiguration.getPlccFile();
+
+        return mainFile.equals(currentFile.getPath());
     }
 
     @NotNull

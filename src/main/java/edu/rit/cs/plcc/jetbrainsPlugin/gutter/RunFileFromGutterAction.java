@@ -6,6 +6,7 @@ import com.intellij.execution.actions.ConfigurationContext;
 import com.intellij.execution.actions.RunConfigurationProducer;
 import com.intellij.execution.executors.DefaultRunExecutor;
 import com.intellij.execution.runners.ExecutionEnvironmentBuilder;
+import com.intellij.history.core.Paths;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.DumbAware;
@@ -21,9 +22,6 @@ public class RunFileFromGutterAction extends AnAction implements DumbAware {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-//        val file = e.getData(CommonDataKeys.PSI_FILE);
-//        if (file == null) return;
-
         val project = e.getProject();
         if (project == null) return;
 
@@ -33,11 +31,14 @@ public class RunFileFromGutterAction extends AnAction implements DumbAware {
         if (fromContext == null) return;
 
         val settings = fromContext.getConfigurationSettings();
+
         val configuration = (PLCCRunConfiguration)settings.getConfiguration();
+        configuration.setName(Paths.getNameOf(configuration.getPlccFile()));
+
         val runManager = RunManager.getInstance(project);
         runManager.setTemporaryConfiguration(settings);
         runManager.setSelectedConfiguration(settings);
-        ExecutionEnvironmentBuilder builder = ExecutionEnvironmentBuilder.createOrNull(DefaultRunExecutor.getRunExecutorInstance(), settings);
+        val builder = ExecutionEnvironmentBuilder.createOrNull(DefaultRunExecutor.getRunExecutorInstance(), settings);
         if (builder != null) {
             ExecutionManager.getInstance(project).restartRunProfile(builder.build());
         }
