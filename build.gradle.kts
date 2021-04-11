@@ -18,7 +18,7 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 // this is the settings for the test instance that comes up when :runIde is called
 intellij {
-
+    updateSinceUntilBuild = false
 }
 tasks.getByName<org.jetbrains.intellij.tasks.PatchPluginXmlTask>("patchPluginXml") {
     changeNotes("""
