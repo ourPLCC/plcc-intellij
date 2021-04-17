@@ -16,14 +16,14 @@ public class PlccGutterRun extends RunLineMarkerContributor {
     public @Nullable Info getInfo(@NotNull PsiElement psiElement) {
         // Only show one icon at the top of the file where the first regex definition is
         val elementType = psiElement.getNode().getElementType();
-        if (elementType != PLCCTypes.TOKEN_TYPE_NAME) {
+        if (elementType != PLCCTypes.SINGLE_MATCH_RULE) {
             return null;
         }
 
-        val tokenDefsSection = psiElement.getParent().getParent().getParent();
-        val firstTokenLine = tokenDefsSection.getFirstChild();
-        val currentTokenLine = psiElement.getParent().getParent();
-        if (!currentTokenLine.equals(firstTokenLine)) {
+        val grammarRulesSection = psiElement.getParent().getParent().getParent();
+        val firstGrammarRule = grammarRulesSection.getFirstChild();
+        val currentGrammarRule = psiElement.getParent().getParent();
+        if (!currentGrammarRule.equals(firstGrammarRule)) {
             return null;
         }
 
