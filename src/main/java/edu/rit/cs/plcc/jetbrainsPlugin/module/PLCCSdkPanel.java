@@ -17,7 +17,7 @@ public class PLCCSdkPanel extends JPanel {
 
     public PLCCSdkPanel(PLCCModuleWizardStep wizardStep) {
         super(new BorderLayout());
-        new PLCCToolchain(plccLocation, this).populateToolchainComboBox();
+        new PLCCToolchain(plccLocation, this);
         new JdkToolchain(jdkComboBox, wizardStep).populateToolchainComboBox();
         add(rootPanel, BorderLayout.CENTER);
     }

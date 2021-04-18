@@ -8,20 +8,11 @@ import lombok.val;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
 public class PlccVersionsFromGithub {
-
-    public static class GettingPLCCVersionsFromGithubException extends Exception {
-        public GettingPLCCVersionsFromGithubException(String message, Throwable cause) {
-            super(message, cause);
-        }
-
-        public GettingPLCCVersionsFromGithubException(String message) {
-            super(message);
-        }
-    }
 
     private static final String PLCC_TAGS_API_URL = "https://api.github.com/repos/ourPLCC/plcc/tags";
 
@@ -106,6 +97,25 @@ public class PlccVersionsFromGithub {
                 structuredTags.put(majorVersion, map1);
             }
         }
+    }
+
+    public GithubTag findLatestVersion() throws GettingPLCCVersionsFromGithubException {
+        findVersions();
+        val maxMajorOpt = structuredTags.keySet().stream().max(Integer::compare);
+        if (maxMajorOpt.isPresent()) {
+            val minorMap = structuredTags.get(maxMajorOpt.get());
+            val maxMinorOpt = minorMap.keySet().stream().max(Integer::compare);
+            if (maxMinorOpt.isPresent()) {
+                val patchMap = minorMap.get(maxMinorOpt.get());
+                val maxPatch = patchMap.keySet().stream()
+                        .filter(x -> x.getPreReleaseIdentifiers() == null)
+                        .max(Comparator.comparingInt(PatchWithPreRelease::getPatchVersion));
+                if (maxPatch.isPresent()) {
+                    return patchMap.get(maxPatch.get());
+                }
+            }
+        }
+        return null;
     }
 
     @Override
